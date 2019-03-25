@@ -1,5 +1,3 @@
-// @flow
-
 const ERROR_TEXT__INVALID_EXPIRY_DATE = 'Expiry date is invalid';
 const ERROR_TEXT__MONTH_OUT_OF_RANGE = 'Expiry month must be between 01 and 12';
 const ERROR_TEXT__YEAR_OUT_OF_RANGE = 'Expiry year cannot be in the past';
@@ -8,17 +6,7 @@ const ERROR_TEXT__DATE_OUT_OF_RANGE = 'Expiry date cannot be in the past';
 const EXPIRY_DATE_REGEX = /^(\d{2})\/(\d{4}|\d{2})$/;
 const MONTH_REGEX = /(0[1-9]|1[0-2])/;
 
-type CustomExpiryErrorTexts = {
-  invalidExpiryDate?: string,
-  monthOutOfRange?: string,
-  yearOutOfRange?: string,
-  dateOutOfRange?: string
-};
-
-export default (
-  expiryDate: string,
-  customExpiryErrorTexts?: CustomExpiryErrorTexts = {}
-) => {
+export default (expiryDate, customExpiryErrorTexts = {}) => {
   const splitDate = expiryDate.split('/');
   if (!EXPIRY_DATE_REGEX.test(expiryDate)) {
     return (
@@ -35,7 +23,7 @@ export default (
   }
 
   const expiryYear = splitDate[1];
-  let date = new Date();
+  const date = new Date();
   let currentYear = date.getFullYear();
   let currentMonth = date.getMonth() + 1;
   currentYear = parseInt(

@@ -1,21 +1,20 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { storiesOf } from '@storybook/react';
-import styled from 'styled-components';
 import CreditCardInput from '.';
 import './index.stories.css';
 
-const Container = styled.div`
-  font-family: 'Helvetica Neue', Helvetica, sans-serif;
-  font-size: 16px;
-  font-variant: normal;
-  margin: 0;
-  padding: 20px;
-  -webkit-font-smoothing: antialiased;
-`;
+const containerStyle = {
+  fontFamily: ['Helvetica Neue', 'Helvetica', 'sans-serif'],
+  fontSize: '16px',
+  fontVariant: 'normal',
+  margin: 0,
+  padding: '20px',
+  WebkitFontSmoothing: 'antialiased'
+};
 
 storiesOf('CreditCardInput', module)
   .add('default', () => (
-    <Container style={{ backgroundColor: '#f0f0f0' }}>
+    <div style={Object.assign(containerStyle, {backgroundColor: '#f0f0f0' })}>
       <CreditCardInput
         cardCVCInputProps={{
           onBlur: e => console.log('cvc blur', e),
@@ -33,7 +32,7 @@ storiesOf('CreditCardInput', module)
           onError: err => console.log(`number error: ${err}`)
         }}
       />
-    </Container>
+    </div>
   ))
   .add('with zip field enabled', () => (
     <Container style={{ backgroundColor: '#f0f0f0' }}>

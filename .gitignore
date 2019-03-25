@@ -2,6 +2,8 @@ node_modules
 lib/
 .DS_Store
 .idea/
+*.swp
+*.log
 package-lock.json
 yarn.lock
 yarn-error.log
