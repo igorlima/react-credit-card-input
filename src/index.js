@@ -59,10 +59,7 @@ const styles = {
     fontSize: '1em',
     outline: '0px'
   },
-  focus: {
-    outline: '0px'
-  },
-  DangerText: {
+  dangerText: {
     fontSize: '0.8rem',
     margin: '5px 0 0 0',
     color: '#ff3860'
@@ -101,7 +98,9 @@ class CreditCardInput extends Component {
     inputClassName: '',
     inputStyle: {},
     invalidClassName: 'is-invalid',
-    invalidStyle: {},
+    invalidStyle: {
+      border: '1px solid #ff3860'
+    },
     customTextLabels: {}
   };
 
@@ -370,7 +369,7 @@ class CreditCardInput extends Component {
     const { invalidClassName, onError } = this.props;
     // $FlowFixMe
     document.getElementById('field-wrapper').classList.add(invalidClassName);
-    this.setState({ errorText });
+    this.setState({ errorText, isFormInvalid: true });
 
     if (inputName) {
       const { onError } = this.props[`${inputName}InputProps`];
@@ -386,11 +385,11 @@ class CreditCardInput extends Component {
     const { invalidClassName } = this.props;
     // $FlowFixMe
     document.getElementById('field-wrapper').classList.remove(invalidClassName);
-    this.setState({ errorText: null });
+    this.setState({ errorText: null, isFormInvalid: false });
   };
 
   render = () => {
-    const { cardImage, errorText, showZip } = this.state;
+    const { cardImage, errorText, showZip, isFormInvalid } = this.state;
     const {
       cardImageClassName,
       cardImageStyle,
@@ -414,25 +413,25 @@ class CreditCardInput extends Component {
       invalidStyle,
       customTextLabels
     } = this.props;
+    const inputWrapperTranslateX = `translateX(${enableZipInput && !showZip ? '4rem' : '0'})`
 
     return (
       <div
         className={containerClassName}
-        style={Object.assign(styles.container, containerStyle)}
+        style={Object.assign({}, styles.container, containerStyle)}
       >
         <div
           id="field-wrapper"
           className={fieldClassName}
-          style={Object.assign(styles.fieldWrapper, fieldStyle)}
-          invalidStyled={invalidStyle}
+          style={Object.assign({}, styles.fieldWrapper, fieldStyle, isFormInvalid && invalidStyle)}
         >
           <img
             className={cardImageClassName}
-            style={Object.assign(styles.cardImage, cardImageStyle)}
+            style={Object.assign({}, styles.cardImage, cardImageStyle)}
             src={cardImage}
           />
           <label
-            style={Object.assign(styles.inputWrapper, inputStyle)}
+            style={Object.assign({}, styles.inputWrapper, inputStyle)}
             isActive
             translateX={false}
             data-max="9999 9999 9999 9999 9999"
@@ -460,7 +459,7 @@ class CreditCardInput extends Component {
             })}
           </label>
           <label
-            style={Object.assign(styles.inputWrapper, inputStyle)}
+            style={Object.assign({}, styles.inputWrapper, inputStyle, {transform: inputWrapperTranslateX})}
             isActive
             data-max="MM / YY 9"
             translateX={enableZipInput && !showZip}
@@ -488,7 +487,7 @@ class CreditCardInput extends Component {
             })}
           </label>
           <label
-            style={Object.assign(styles.inputWrapper, inputStyle)}
+            style={Object.assign({}, styles.inputWrapper, inputStyle, {transform: inputWrapperTranslateX})}
             isActive
             data-max="99999"
             translateX={enableZipInput && !showZip}
@@ -519,7 +518,7 @@ class CreditCardInput extends Component {
             isActive={enableZipInput}
             isZipActive={showZip}
             translateX={enableZipInput && !showZip}
-            style={{display: showZip ? 'flex' : 'none'}}
+            style={Object.assign({display: enableZipInput && showZip ? 'flex' : 'none'}, {transform: inputWrapperTranslateX})}
           >
             {cardZipInputRenderer({
               handleCardZipChange: onChange =>
@@ -546,7 +545,7 @@ class CreditCardInput extends Component {
         {errorText && (
           <p
             className={dangerTextClassName}
-            style={Object.assign(styles.DangerText, dangerTextStyle)}
+            style={Object.assign({}, styles.dangerText, dangerTextStyle)}
           >
             {errorText}
           </p>

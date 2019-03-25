@@ -35,9 +35,9 @@ storiesOf('CreditCardInput', module)
     </div>
   ))
   .add('with zip field enabled', () => (
-    <Container style={{ backgroundColor: '#f0f0f0' }}>
+    <div style={Object.assign(containerStyle, {backgroundColor: '#f0f0f0' })}>
       <CreditCardInput enableZipInput />
-    </Container>
+    </div>
   ))
   .add('with pre-filled values', () => (
     <Container style={{ backgroundColor: '#f0f0f0' }}>
