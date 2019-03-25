@@ -56,7 +56,8 @@ const styles = {
     border: '0px',
     // position: 'absolute',
     width: '100%',
-    fontSize: '1em'
+    fontSize: '1em',
+    outline: '0px'
   },
   focus: {
     outline: '0px'
@@ -518,6 +519,7 @@ class CreditCardInput extends Component {
             isActive={enableZipInput}
             isZipActive={showZip}
             translateX={enableZipInput && !showZip}
+            style={{display: showZip ? 'flex' : 'none'}}
           >
             {cardZipInputRenderer({
               handleCardZipChange: onChange =>
