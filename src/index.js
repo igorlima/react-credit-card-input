@@ -41,20 +41,23 @@ const styles = {
   inputWrapper: {
     alignItems: 'center',
     marginLeft: '0.5em',
-    position: 'relative',
+    // position: 'relative',
+    display: 'flex',
     transition: 'transform 0.5s',
+    transform: 'translateX(0)'
+  },
+  inputWrapperPsedoAfter: {
     // https://stackoverflow.com/questions/43701748/react-pseudo-selector-inline-styling
     // https://stackoverflow.com/questions/45730224/css-pseudo-code-libefore-in-react-inline-style
     // https://blog.logrocket.com/the-best-react-inline-style-libraries-comparing-radium-aphrodite-emotion-849ef148c473
     // https://medium.com/@pioul/modular-css-with-react-61638ae9ea3e
-    '::after': {
-      visibility: 'hidden',
-      height: 0
-    }
+    // https://stackoverflow.com/questions/28269669/css-pseudo-elements-in-react/28269950
+    visibility: 'hidden',
+    height: 0
   },
   crediCardInput: {
     border: '0px',
-    // position: 'absolute',
+    position: 'absolute',
     width: '100%',
     fontSize: '1em',
     outline: '0px'
@@ -457,12 +460,13 @@ class CreditCardInput extends Component {
                 onKeyPress: this.handleCardNumberKeyPress
               }
             })}
+            <label style={styles.inputWrapperPsedoAfter}>9999 9999 9999 9999 9999</label>
           </label>
           <label
             style={Object.assign({}, styles.inputWrapper, inputStyle, {transform: inputWrapperTranslateX})}
+            translateX={enableZipInput && !showZip}
             isActive
             data-max="MM / YY 9"
-            translateX={enableZipInput && !showZip}
           >
             {cardExpiryInputRenderer({
               handleCardExpiryChange: onChange =>
@@ -485,12 +489,13 @@ class CreditCardInput extends Component {
                 onKeyPress: this.handleCardExpiryKeyPress
               }
             })}
+            <label style={styles.inputWrapperPsedoAfter}>MM / YY 9</label>
           </label>
           <label
             style={Object.assign({}, styles.inputWrapper, inputStyle, {transform: inputWrapperTranslateX})}
+            translateX={enableZipInput && !showZip}
             isActive
             data-max="99999"
-            translateX={enableZipInput && !showZip}
           >
             {cardCVCInputRenderer({
               handleCardCVCChange: onChange =>
@@ -512,13 +517,14 @@ class CreditCardInput extends Component {
                 onKeyPress: this.handleCardCVCKeyPress
               }
             })}
+            <label style={styles.inputWrapperPsedoAfter}>99999</label>
           </label>
           <label
+            style={Object.assign({}, styles.inputWrapper, {display: enableZipInput && showZip ? 'flex' : 'none'}, {transform: inputWrapperTranslateX})}
+            translateX={enableZipInput && !showZip}
             data-max="999999"
             isActive={enableZipInput}
             isZipActive={showZip}
-            translateX={enableZipInput && !showZip}
-            style={Object.assign({display: enableZipInput && showZip ? 'flex' : 'none'}, {transform: inputWrapperTranslateX})}
           >
             {cardZipInputRenderer({
               handleCardZipChange: onChange =>
@@ -540,6 +546,7 @@ class CreditCardInput extends Component {
                 onKeyPress: this.handleCardZipKeyPress
               }
             })}
+            <label style={styles.inputWrapperPsedoAfter}>999999</label>
           </label>
         </div>
         {errorText && (
