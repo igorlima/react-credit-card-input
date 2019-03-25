@@ -14,7 +14,7 @@ const containerStyle = {
 
 storiesOf('CreditCardInput', module)
   .add('default', () => (
-    <div style={Object.assign(containerStyle, {backgroundColor: '#f0f0f0' })}>
+    <div style={Object.assign({}, containerStyle, {backgroundColor: '#f0f0f0' })}>
       <CreditCardInput
         cardCVCInputProps={{
           onBlur: e => console.log('cvc blur', e),
@@ -35,7 +35,7 @@ storiesOf('CreditCardInput', module)
     </div>
   ))
   .add('with zip field enabled', () => (
-    <div style={Object.assign(containerStyle, {backgroundColor: '#f0f0f0' })}>
+    <div style={Object.assign({}, containerStyle, {backgroundColor: '#f0f0f0' })}>
       <CreditCardInput enableZipInput />
     </div>
   ))
