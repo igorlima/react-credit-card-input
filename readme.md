@@ -4,7 +4,7 @@
 
 ## Example
 
-[Click here for an interactive demo](https://medipass.github.io/react-credit-card-input)
+[Click here for an interactive demo](https://igorlima.github.io/react-credit-card-input)
 
 ![](./example.gif)
 
