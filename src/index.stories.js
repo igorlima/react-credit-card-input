@@ -40,16 +40,16 @@ storiesOf('CreditCardInput', module)
     </div>
   ))
   .add('with pre-filled values', () => (
-    <Container style={{ backgroundColor: '#f0f0f0' }}>
+    <div style={Object.assign({}, containerStyle, {backgroundColor: '#f0f0f0' })}>
       <CreditCardInput
         cardCVCInputProps={{ value: '123' }}
         cardExpiryInputProps={{ value: '05 / 21' }}
         cardNumberInputProps={{ value: '4242 4242 4242 4242' }}
       />
-    </Container>
+    </div>
   ))
   .add('custom styling (container)', () => (
-    <Container style={{ backgroundColor: '#f0f0f0' }}>
+    <div style={Object.assign({}, containerStyle, {backgroundColor: '#f0f0f0' })}>
       <CreditCardInput
         containerClassName="custom-container"
         containerStyle={{
@@ -58,37 +58,37 @@ storiesOf('CreditCardInput', module)
           fontSize: '30px'
         }}
       />
-    </Container>
+    </div>
   ))
   .add('custom styling (field wrapper)', () => (
-    <Container style={{ backgroundColor: '#f0f0f0' }}>
+    <div style={Object.assign({}, containerStyle, {backgroundColor: '#f0f0f0' })}>
       <CreditCardInput
         fieldClassName="custom-field"
         fieldStyle={{ padding: '20px', color: 'gray' }}
         invalidClassName="is-invalid-custom"
         invalidStyle={{ border: '3px solid red' }}
       />
-    </Container>
+    </div>
   ))
   .add('custom styling (input)', () => (
-    <Container style={{ backgroundColor: '#f0f0f0' }}>
+    <div style={Object.assign({}, containerStyle, {backgroundColor: '#f0f0f0' })}>
       <CreditCardInput
         inputClassName="custom-input"
         inputStyle={{ color: 'red' }}
       />
-    </Container>
+    </div>
   ))
   .add('custom styling (danger text)', () => (
-    <Container style={{ backgroundColor: '#f0f0f0' }}>
+    <div style={Object.assign({}, containerStyle, {backgroundColor: '#f0f0f0' })}>
       <CreditCardInput
         dangerTextClassName="custom-danger-text"
         dangerTextStyle={{ color: 'green' }}
         invalidStyle={{ border: '1px solid green' }}
       />
-    </Container>
+    </div>
   ))
   .add('custom renderers', () => (
-    <Container style={{ backgroundColor: '#f0f0f0' }}>
+    <div style={Object.assign({}, containerStyle, {backgroundColor: '#f0f0f0' })}>
       <CreditCardInput
         cardCVCInputRenderer={({ handleCardCVCChange, props }) => (
           <input
@@ -113,10 +113,10 @@ storiesOf('CreditCardInput', module)
           />
         )}
       />
-    </Container>
+    </div>
   ))
   .add('custom text values', () => (
-    <Container style={{ backgroundColor: '#f0f0f0' }}>
+    <div style={Object.assign({}, containerStyle, {backgroundColor: '#f0f0f0' })}>
       <CreditCardInput
         customTextLabels={{
           invalidCardNumber: 'El número de la tarjeta es inválido',
@@ -134,5 +134,5 @@ storiesOf('CreditCardInput', module)
           zipPlaceholder: 'C.P.'
         }}
       />
-    </Container>
+    </div>
   ));
