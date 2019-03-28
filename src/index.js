@@ -441,8 +441,6 @@ class CreditCardInput extends Component {
           />
           <label
             style={Object.assign({}, styles.inputWrapper, inputStyle)}
-            isActive
-            translateX={false}
             data-max="9999 9999 9999 9999 9999"
           >
             {fakeCardNumberInputRenderer({
@@ -483,8 +481,6 @@ class CreditCardInput extends Component {
           </label>
           <label
             style={Object.assign({}, styles.inputWrapper, inputStyle, {transform: inputWrapperTranslateX})}
-            translateX={enableZipInput && !showZip}
-            isActive
             data-max="MM / YY 9"
           >
             {cardExpiryInputRenderer({
@@ -512,8 +508,6 @@ class CreditCardInput extends Component {
           </label>
           <label
             style={Object.assign({}, styles.inputWrapper, inputStyle, {transform: inputWrapperTranslateX})}
-            translateX={enableZipInput && !showZip}
-            isActive
             data-max="99999"
           >
             {cardCVCInputRenderer({
@@ -540,10 +534,7 @@ class CreditCardInput extends Component {
           </label>
           <label
             style={Object.assign({}, styles.inputWrapper, {display: enableZipInput && showZip ? 'flex' : 'none'}, {transform: inputWrapperTranslateX})}
-            translateX={enableZipInput && !showZip}
             data-max="999999"
-            isActive={enableZipInput}
-            isZipActive={showZip}
           >
             {cardZipInputRenderer({
               handleCardZipChange: onChange =>
