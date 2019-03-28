@@ -44,7 +44,9 @@ const styles = {
     // position: 'relative',
     display: 'flex',
     transition: 'transform 0.5s',
-    transform: 'translateX(0)'
+    transform: 'translateX(0)',
+    height: '1.1em',
+    overflow: 'hidden'
   },
   inputWrapperPsedoAfter: {
     // https://stackoverflow.com/questions/43701748/react-pseudo-selector-inline-styling
@@ -76,12 +78,13 @@ const CARD_TYPES = {
   amex: 'AMERICAN_EXPRESS'
 };
 
-const inputRenderer = ({ props }: Object) => <input style={styles.crediCardInput} {...props} />;
+const inputRenderer = ({ props }, style = {}) => <input style={Object.assign({}, styles.crediCardInput, style)} {...props} />;
 
 class CreditCardInput extends Component {
   static defaultProps = {
     cardCVCInputRenderer: inputRenderer,
     cardExpiryInputRenderer: inputRenderer,
+    fakeCardNumberInputRenderer: inputRenderer,
     cardNumberInputRenderer: inputRenderer,
     cardZipInputRenderer: inputRenderer,
     cardExpiryInputProps: {},
@@ -110,6 +113,7 @@ class CreditCardInput extends Component {
   constructor(props) {
     super(props);
     this.cardExpiryField = null;
+    this.fakeCardNumberField = null;
     this.cardNumberField = null;
     this.cvcField = null;
     this.zipField = null;
@@ -166,6 +170,7 @@ class CreditCardInput extends Component {
     const cardTypeLengths = cardTypeInfo.lengths || [16];
 
     this.cardNumberField.value = formatCardNumber(cardNumber);
+    this.fakeCardNumberField.value = this.cardNumberField.value.substr(-4)
 
     this.setState({
       cardImage: images[cardType] || images.placeholder,
@@ -402,6 +407,7 @@ class CreditCardInput extends Component {
       cardNumberInputProps,
       cardCVCInputRenderer,
       cardExpiryInputRenderer,
+      fakeCardNumberInputRenderer,
       cardNumberInputRenderer,
       cardZipInputRenderer,
       containerClassName,
@@ -439,6 +445,19 @@ class CreditCardInput extends Component {
             translateX={false}
             data-max="9999 9999 9999 9999 9999"
           >
+            {fakeCardNumberInputRenderer({
+              props: {
+                id: 'fake-card-number',
+                ref: fakeCardNumberField => {
+                  this.fakeCardNumberField = fakeCardNumberField;
+                },
+                autoComplete: 'cc-number',
+                className: `credit-card-input ${inputClassName}`,
+                placeholder:
+                  customTextLabels.cardNumberPlaceholder || 'Card number',
+                type: 'tel',
+              }
+            }, {display: 'none'})}
             {cardNumberInputRenderer({
               handleCardNumberChange: onChange =>
                 this.handleCardNumberChange({ onChange }),
