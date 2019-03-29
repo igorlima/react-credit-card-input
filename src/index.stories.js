@@ -14,7 +14,9 @@ const containerStyle = {
 
 storiesOf('CreditCardInput', module)
   .add('default', () => (
-    <div style={Object.assign({}, containerStyle, {backgroundColor: '#f0f0f0' })}>
+    <div
+      style={Object.assign({}, containerStyle, { backgroundColor: '#f0f0f0' })}
+    >
       <CreditCardInput
         cardCVCInputProps={{
           onBlur: e => console.log('cvc blur', e),
@@ -35,17 +37,23 @@ storiesOf('CreditCardInput', module)
     </div>
   ))
   .add('mobile friendly enabled', () => (
-    <div style={Object.assign({}, containerStyle, {backgroundColor: '#f0f0f0' })}>
+    <div
+      style={Object.assign({}, containerStyle, { backgroundColor: '#f0f0f0' })}
+    >
       <CreditCardInput enableMobileFriendlyMode />
     </div>
   ))
   .add('with zip field enabled', () => (
-    <div style={Object.assign({}, containerStyle, {backgroundColor: '#f0f0f0' })}>
+    <div
+      style={Object.assign({}, containerStyle, { backgroundColor: '#f0f0f0' })}
+    >
       <CreditCardInput enableZipInput />
     </div>
   ))
   .add('with pre-filled values', () => (
-    <div style={Object.assign({}, containerStyle, {backgroundColor: '#f0f0f0' })}>
+    <div
+      style={Object.assign({}, containerStyle, { backgroundColor: '#f0f0f0' })}
+    >
       <CreditCardInput
         cardCVCInputProps={{ value: '123' }}
         cardExpiryInputProps={{ value: '05 / 21' }}
@@ -54,7 +62,9 @@ storiesOf('CreditCardInput', module)
     </div>
   ))
   .add('custom styling (container)', () => (
-    <div style={Object.assign({}, containerStyle, {backgroundColor: '#f0f0f0' })}>
+    <div
+      style={Object.assign({}, containerStyle, { backgroundColor: '#f0f0f0' })}
+    >
       <CreditCardInput
         containerClassName="custom-container"
         containerStyle={{
@@ -66,7 +76,9 @@ storiesOf('CreditCardInput', module)
     </div>
   ))
   .add('custom styling (field wrapper)', () => (
-    <div style={Object.assign({}, containerStyle, {backgroundColor: '#f0f0f0' })}>
+    <div
+      style={Object.assign({}, containerStyle, { backgroundColor: '#f0f0f0' })}
+    >
       <CreditCardInput
         fieldClassName="custom-field"
         fieldStyle={{ padding: '20px', color: 'gray' }}
@@ -76,7 +88,9 @@ storiesOf('CreditCardInput', module)
     </div>
   ))
   .add('custom styling (input)', () => (
-    <div style={Object.assign({}, containerStyle, {backgroundColor: '#f0f0f0' })}>
+    <div
+      style={Object.assign({}, containerStyle, { backgroundColor: '#f0f0f0' })}
+    >
       <CreditCardInput
         inputClassName="custom-input"
         inputStyle={{ color: 'red' }}
@@ -84,7 +98,9 @@ storiesOf('CreditCardInput', module)
     </div>
   ))
   .add('custom styling (danger text)', () => (
-    <div style={Object.assign({}, containerStyle, {backgroundColor: '#f0f0f0' })}>
+    <div
+      style={Object.assign({}, containerStyle, { backgroundColor: '#f0f0f0' })}
+    >
       <CreditCardInput
         dangerTextClassName="custom-danger-text"
         dangerTextStyle={{ color: 'green' }}
@@ -93,7 +109,9 @@ storiesOf('CreditCardInput', module)
     </div>
   ))
   .add('custom renderers', () => (
-    <div style={Object.assign({}, containerStyle, {backgroundColor: '#f0f0f0' })}>
+    <div
+      style={Object.assign({}, containerStyle, { backgroundColor: '#f0f0f0' })}
+    >
       <CreditCardInput
         cardCVCInputRenderer={({ handleCardCVCChange, props }) => (
           <input
@@ -121,7 +139,9 @@ storiesOf('CreditCardInput', module)
     </div>
   ))
   .add('custom text values', () => (
-    <div style={Object.assign({}, containerStyle, {backgroundColor: '#f0f0f0' })}>
+    <div
+      style={Object.assign({}, containerStyle, { backgroundColor: '#f0f0f0' })}
+    >
       <CreditCardInput
         customTextLabels={{
           invalidCardNumber: 'El número de la tarjeta es inválido',

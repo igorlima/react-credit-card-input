@@ -79,7 +79,9 @@ const CARD_TYPES = {
   amex: 'AMERICAN_EXPRESS'
 };
 
-const inputRenderer = ({ props }, style = {}) => <input style={Object.assign({}, styles.crediCardInput, style)} {...props} />;
+const inputRenderer = ({ props }, style = {}) => (
+  <input style={Object.assign({}, styles.crediCardInput, style)} {...props} />
+);
 
 class CreditCardInput extends Component {
   static defaultProps = {
@@ -171,7 +173,7 @@ class CreditCardInput extends Component {
     const { cardNumberInputProps } = this.props;
     cardNumberInputProps.onFocus && cardNumberInputProps.onFocus(e);
     onFocus && onFocus(e);
-  }
+  };
 
   handleCardNumberChange = ({ onChange } = { onChange: null }) => e => {
     const {
@@ -189,7 +191,7 @@ class CreditCardInput extends Component {
 
     this.cardNumberField.value = formatCardNumber(cardNumber);
     if (this.fakeCardNumberField) {
-      this.fakeCardNumberField.value = this.cardNumberField.value.substr(-4)
+      this.fakeCardNumberField.value = this.cardNumberField.value.substr(-4);
     }
 
     this.setState({
@@ -417,7 +419,13 @@ class CreditCardInput extends Component {
   };
 
   render = () => {
-    const { cardImage, errorText, showZip, isFormInvalid, isMobileFriendly } = this.state;
+    const {
+      cardImage,
+      errorText,
+      showZip,
+      isFormInvalid,
+      isMobileFriendly
+    } = this.state;
     const {
       cardImageClassName,
       cardImageStyle,
@@ -443,8 +451,14 @@ class CreditCardInput extends Component {
       invalidStyle,
       customTextLabels
     } = this.props;
-    const mobileTranslateX = enableMobileFriendlyMode && isMobileFriendly ? '-2em' : '0';
-    const inputWrapperTranslateX = `translateX(${(enableMobileFriendlyMode && !isMobileFriendly) || (enableZipInput && !showZip) ? '4rem' : mobileTranslateX})`;
+    const mobileTranslateX =
+      enableMobileFriendlyMode && isMobileFriendly ? '-2em' : '0';
+    const inputWrapperTranslateX = `translateX(${
+      (enableMobileFriendlyMode && !isMobileFriendly) ||
+      (enableZipInput && !showZip)
+        ? '4rem'
+        : mobileTranslateX
+    })`;
 
     return (
       <div
@@ -454,7 +468,12 @@ class CreditCardInput extends Component {
         <div
           id="field-wrapper"
           className={fieldClassName}
-          style={Object.assign({}, styles.fieldWrapper, fieldStyle, isFormInvalid && invalidStyle)}
+          style={Object.assign(
+            {},
+            styles.fieldWrapper,
+            fieldStyle,
+            isFormInvalid && invalidStyle
+          )}
         >
           <img
             className={cardImageClassName}
@@ -465,50 +484,66 @@ class CreditCardInput extends Component {
             style={Object.assign({}, styles.inputWrapper, inputStyle)}
             data-max="9999 9999 9999 9999 9999"
           >
-            {enableMobileFriendlyMode && fakeCardNumberInputRenderer({
-              handleCardNumberFocus: onFocus =>
-                this.handleCardNumberFocus({ onFocus }),
-              props: {
-                id: 'fake-card-number',
-                ref: fakeCardNumberField => {
-                  this.fakeCardNumberField = fakeCardNumberField;
+            {enableMobileFriendlyMode &&
+              fakeCardNumberInputRenderer(
+                {
+                  handleCardNumberFocus: onFocus =>
+                    this.handleCardNumberFocus({ onFocus }),
+                  props: {
+                    id: 'fake-card-number',
+                    ref: fakeCardNumberField => {
+                      this.fakeCardNumberField = fakeCardNumberField;
+                    },
+                    autoComplete: 'cc-number',
+                    className: `credit-card-input ${inputClassName}`,
+                    placeholder:
+                      customTextLabels.cardNumberPlaceholder || 'Card number',
+                    type: 'tel',
+                    onFocus: this.handleCardNumberFocus()
+                  }
                 },
-                autoComplete: 'cc-number',
-                className: `credit-card-input ${inputClassName}`,
-                placeholder:
-                  customTextLabels.cardNumberPlaceholder || 'Card number',
-                type: 'tel',
-                onFocus: this.handleCardNumberFocus()
-              }
-            }, !isMobileFriendly ? {display: 'none'} : {})}
-            {cardNumberInputRenderer({
-              handleCardNumberChange: onChange =>
-                this.handleCardNumberChange({ onChange }),
-              handleCardNumberBlur: onBlur =>
-                this.handleCardNumberBlur({ onBlur }),
-              handleCardNumberFocus: onFocus =>
-                this.handleCardNumberFocus({ onFocus }),
-              props: {
-                id: 'card-number',
-                ref: cardNumberField => {
-                  this.cardNumberField = cardNumberField;
-                },
-                autoComplete: 'cc-number',
-                className: `credit-card-input ${inputClassName}`,
-                placeholder:
-                  customTextLabels.cardNumberPlaceholder || 'Card number',
-                type: 'tel',
-                ...cardNumberInputProps,
-                onBlur: this.handleCardNumberBlur(),
-                onFocus: this.handleCardNumberFocus(),
-                onChange: this.handleCardNumberChange(),
-                onKeyPress: this.handleCardNumberKeyPress
-              }
-            }, Object.assign({transition: 'transform 1.0s'}, enableMobileFriendlyMode && isMobileFriendly ? {transform: 'translateX(-320px)', zIndex: 0} : {transform: 'translateX(0px)'}))}
-            <label style={styles.inputWrapperPsedoAfter}>9999 9999 9999 9999 9999</label>
+                !isMobileFriendly ? { display: 'none' } : {}
+              )}
+            {cardNumberInputRenderer(
+              {
+                handleCardNumberChange: onChange =>
+                  this.handleCardNumberChange({ onChange }),
+                handleCardNumberBlur: onBlur =>
+                  this.handleCardNumberBlur({ onBlur }),
+                handleCardNumberFocus: onFocus =>
+                  this.handleCardNumberFocus({ onFocus }),
+                props: {
+                  id: 'card-number',
+                  ref: cardNumberField => {
+                    this.cardNumberField = cardNumberField;
+                  },
+                  autoComplete: 'cc-number',
+                  className: `credit-card-input ${inputClassName}`,
+                  placeholder:
+                    customTextLabels.cardNumberPlaceholder || 'Card number',
+                  type: 'tel',
+                  ...cardNumberInputProps,
+                  onBlur: this.handleCardNumberBlur(),
+                  onFocus: this.handleCardNumberFocus(),
+                  onChange: this.handleCardNumberChange(),
+                  onKeyPress: this.handleCardNumberKeyPress
+                }
+              },
+              Object.assign(
+                { transition: 'transform 1.0s' },
+                enableMobileFriendlyMode && isMobileFriendly
+                  ? { transform: 'translateX(-320px)', zIndex: 0 }
+                  : { transform: 'translateX(0px)' }
+              )
+            )}
+            <label style={styles.inputWrapperPsedoAfter}>
+              9999 9999 9999 9999 9999
+            </label>
           </label>
           <label
-            style={Object.assign({}, styles.inputWrapper, inputStyle, {transform: inputWrapperTranslateX})}
+            style={Object.assign({}, styles.inputWrapper, inputStyle, {
+              transform: inputWrapperTranslateX
+            })}
             data-max="MM / YY 9"
           >
             {cardExpiryInputRenderer({
@@ -528,14 +563,20 @@ class CreditCardInput extends Component {
                 ...cardExpiryInputProps,
                 onBlur: this.handleCardExpiryBlur(),
                 onChange: this.handleCardExpiryChange(),
-                onKeyDown: this.handleKeyDown(enableMobileFriendlyMode ? this.fakeCardNumberField : this.cardNumberField),
+                onKeyDown: this.handleKeyDown(
+                  enableMobileFriendlyMode
+                    ? this.fakeCardNumberField
+                    : this.cardNumberField
+                ),
                 onKeyPress: this.handleCardExpiryKeyPress
               }
             })}
             <label style={styles.inputWrapperPsedoAfter}>MM / YY 9</label>
           </label>
           <label
-            style={Object.assign({}, styles.inputWrapper, inputStyle, {transform: inputWrapperTranslateX})}
+            style={Object.assign({}, styles.inputWrapper, inputStyle, {
+              transform: inputWrapperTranslateX
+            })}
             data-max="99999"
           >
             {cardCVCInputRenderer({
@@ -561,7 +602,12 @@ class CreditCardInput extends Component {
             <label style={styles.inputWrapperPsedoAfter}>99999</label>
           </label>
           <label
-            style={Object.assign({}, styles.inputWrapper, {display: enableZipInput && showZip ? 'flex' : 'none'}, {transform: inputWrapperTranslateX})}
+            style={Object.assign(
+              {},
+              styles.inputWrapper,
+              { display: enableZipInput && showZip ? 'flex' : 'none' },
+              { transform: inputWrapperTranslateX }
+            )}
             data-max="999999"
           >
             {cardZipInputRenderer({
