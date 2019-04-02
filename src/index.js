@@ -85,6 +85,7 @@ const inputRenderer = ({ props }, style = {}) => (
 
 class CreditCardInput extends Component {
   static defaultProps = {
+    animationOption: {},
     cardCVCInputRenderer: inputRenderer,
     cardExpiryInputRenderer: inputRenderer,
     fakeCardNumberInputRenderer: inputRenderer,
@@ -427,6 +428,7 @@ class CreditCardInput extends Component {
       isMobileFriendly
     } = this.state;
     const {
+      animationOption,
       cardImageClassName,
       cardImageStyle,
       cardCVCInputProps,
@@ -451,13 +453,18 @@ class CreditCardInput extends Component {
       invalidStyle,
       customTextLabels
     } = this.props;
-    const mobileTranslateX =
-      enableMobileFriendlyMode && isMobileFriendly ? '-2em' : '0';
+    const {
+      defaultTranslateX = '0',
+      mobileTranslateX = '-2em',
+      inititalTranslateX = '4em'
+    } = animationOption
+    const translateX =
+      enableMobileFriendlyMode && isMobileFriendly ? mobileTranslateX : defaultTranslateX;
     const inputWrapperTranslateX = `translateX(${
       (enableMobileFriendlyMode && !isMobileFriendly) ||
       (enableZipInput && !showZip)
-        ? '4rem'
-        : mobileTranslateX
+        ? inititalTranslateX
+        : translateX
     })`;
 
     return (

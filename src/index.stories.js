@@ -37,10 +37,19 @@ storiesOf('CreditCardInput', module)
     </div>
   ))
   .add('mobile friendly enabled', () => (
-    <div
-      style={Object.assign({}, containerStyle, { backgroundColor: '#f0f0f0' })}
-    >
-      <CreditCardInput enableMobileFriendlyMode />
+    <div style={Object.assign({}, containerStyle, { backgroundColor: '#f0f0f0' })}>
+      <CreditCardInput
+        enableMobileFriendlyMode
+        fieldStyle={{ border: '1px solid #b5b5b5' }}
+        customTextLabels={{
+          cardNumberPlaceholder: 'Card Number'
+        }}
+        animationOption={{
+          defaultTranslateX: '0',
+          mobileTranslateX: '0',
+          inititalTranslateX: '0'
+        }}
+      />
     </div>
   ))
   .add('with zip field enabled', () => (
