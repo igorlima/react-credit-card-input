@@ -47,7 +47,14 @@ storiesOf('CreditCardInput', module)
         animationOption={{
           defaultTranslateX: '0',
           mobileTranslateX: '0',
-          inititalTranslateX: '0'
+          inititalTranslateX: '0',
+          hideCreditCardStyle: {
+            transform: 'translateX(-320px)',
+            zIndex: 0
+          },
+          showCreditCardStyle: {
+            transform: 'translateX(0px)'
+          }
         }}
       />
     </div>

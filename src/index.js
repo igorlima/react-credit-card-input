@@ -85,7 +85,18 @@ const inputRenderer = ({ props }, style = {}) => (
 
 class CreditCardInput extends Component {
   static defaultProps = {
-    animationOption: {},
+    animationOption: {
+      defaultTranslateX: '0',
+      mobileTranslateX: '-2em',
+      inititalTranslateX: '4em',
+      hideCreditCardStyle: {
+        transform: 'translateX(-320px)',
+        zIndex: 0
+      },
+      showCreditCardStyle: {
+        transform: 'translateX(0px)'
+      }
+    },
     cardCVCInputRenderer: inputRenderer,
     cardExpiryInputRenderer: inputRenderer,
     fakeCardNumberInputRenderer: inputRenderer,
@@ -128,7 +139,7 @@ class CreditCardInput extends Component {
       cardNumber: null,
       errorText: null,
       showZip: false,
-      isMobileFriendly: false
+      collapseCardNumber: false
     };
   }
 
@@ -155,7 +166,7 @@ class CreditCardInput extends Component {
         'cardNumber'
       );
     } else {
-      enableMobileFriendlyMode && this.setState({ isMobileFriendly: true });
+      enableMobileFriendlyMode && this.setState({ collapseCardNumber: true });
     }
 
     const { cardNumberInputProps } = this.props;
@@ -166,7 +177,7 @@ class CreditCardInput extends Component {
   handleCardNumberFocus = ({ onFocus } = { onFocus: null }) => e => {
     const { enableMobileFriendlyMode } = this.props;
     if (enableMobileFriendlyMode) {
-      this.setState({ isMobileFriendly: false }, () => {
+      this.setState({ collapseCardNumber: false }, () => {
         this.cardNumberField.focus();
       });
     }
@@ -425,10 +436,16 @@ class CreditCardInput extends Component {
       errorText,
       showZip,
       isFormInvalid,
-      isMobileFriendly
+      collapseCardNumber
     } = this.state;
     const {
-      animationOption,
+      animationOption: {
+        defaultTranslateX,
+        mobileTranslateX,
+        inititalTranslateX,
+        hideCreditCardStyle,
+        showCreditCardStyle
+      },
       cardImageClassName,
       cardImageStyle,
       cardCVCInputProps,
@@ -453,15 +470,10 @@ class CreditCardInput extends Component {
       invalidStyle,
       customTextLabels
     } = this.props;
-    const {
-      defaultTranslateX = '0',
-      mobileTranslateX = '-2em',
-      inititalTranslateX = '4em'
-    } = animationOption
     const translateX =
-      enableMobileFriendlyMode && isMobileFriendly ? mobileTranslateX : defaultTranslateX;
+      enableMobileFriendlyMode && collapseCardNumber ? mobileTranslateX : defaultTranslateX;
     const inputWrapperTranslateX = `translateX(${
-      (enableMobileFriendlyMode && !isMobileFriendly) ||
+      (enableMobileFriendlyMode && !collapseCardNumber) ||
       (enableZipInput && !showZip)
         ? inititalTranslateX
         : translateX
@@ -469,7 +481,7 @@ class CreditCardInput extends Component {
 
     return (
       <div
-        className={containerClassName}
+        className={[containerClassName, enableMobileFriendlyMode ? 'mobile-friendly' : '', collapseCardNumber ? 'collapsed' : ''].join(' ').trim()}
         style={Object.assign({}, styles.container, containerStyle)}
       >
         <div
@@ -489,6 +501,7 @@ class CreditCardInput extends Component {
           />
           <label
             style={Object.assign({}, styles.inputWrapper, inputStyle)}
+            className="card-number-wrapper"
             data-max="9999 9999 9999 9999 9999"
           >
             {enableMobileFriendlyMode &&
@@ -509,7 +522,7 @@ class CreditCardInput extends Component {
                     onFocus: this.handleCardNumberFocus()
                   }
                 },
-                !isMobileFriendly ? { display: 'none' } : {}
+                !collapseCardNumber ? { display: 'none' } : {}
               )}
             {cardNumberInputRenderer(
               {
@@ -538,9 +551,9 @@ class CreditCardInput extends Component {
               },
               Object.assign(
                 { transition: 'transform 1.0s' },
-                enableMobileFriendlyMode && isMobileFriendly
-                  ? { transform: 'translateX(-320px)', zIndex: 0 }
-                  : { transform: 'translateX(0px)' }
+                enableMobileFriendlyMode && collapseCardNumber
+                  ? hideCreditCardStyle
+                  : showCreditCardStyle
               )
             )}
             <label style={styles.inputWrapperPsedoAfter}>
@@ -551,6 +564,7 @@ class CreditCardInput extends Component {
             style={Object.assign({}, styles.inputWrapper, inputStyle, {
               transform: inputWrapperTranslateX
             })}
+            className="card-expiry-wrapper"
             data-max="MM / YY 9"
           >
             {cardExpiryInputRenderer({
@@ -584,6 +598,7 @@ class CreditCardInput extends Component {
             style={Object.assign({}, styles.inputWrapper, inputStyle, {
               transform: inputWrapperTranslateX
             })}
+            className="card-cvc-wrapper"
             data-max="99999"
           >
             {cardCVCInputRenderer({
@@ -615,6 +630,7 @@ class CreditCardInput extends Component {
               { display: enableZipInput && showZip ? 'flex' : 'none' },
               { transform: inputWrapperTranslateX }
             )}
+            className="zip-wrapper"
             data-max="999999"
           >
             {cardZipInputRenderer({
