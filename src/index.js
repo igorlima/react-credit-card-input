@@ -471,7 +471,9 @@ class CreditCardInput extends Component {
       customTextLabels
     } = this.props;
     const translateX =
-      enableMobileFriendlyMode && collapseCardNumber ? mobileTranslateX : defaultTranslateX;
+      enableMobileFriendlyMode && collapseCardNumber
+        ? mobileTranslateX
+        : defaultTranslateX;
     const inputWrapperTranslateX = `translateX(${
       (enableMobileFriendlyMode && !collapseCardNumber) ||
       (enableZipInput && !showZip)
@@ -481,7 +483,13 @@ class CreditCardInput extends Component {
 
     return (
       <div
-        className={[containerClassName, enableMobileFriendlyMode ? 'mobile-friendly' : '', collapseCardNumber ? 'collapsed' : ''].join(' ').trim()}
+        className={[
+          containerClassName,
+          enableMobileFriendlyMode ? 'mobile-friendly' : '',
+          collapseCardNumber ? 'collapsed' : ''
+        ]
+          .join(' ')
+          .trim()}
         style={Object.assign({}, styles.container, containerStyle)}
       >
         <div

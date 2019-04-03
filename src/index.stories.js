@@ -37,7 +37,9 @@ storiesOf('CreditCardInput', module)
     </div>
   ))
   .add('mobile friendly enabled', () => (
-    <div style={Object.assign({}, containerStyle, { backgroundColor: '#f0f0f0' })}>
+    <div
+      style={Object.assign({}, containerStyle, { backgroundColor: '#f0f0f0' })}
+    >
       <CreditCardInput
         enableMobileFriendlyMode
         fieldStyle={{ border: '1px solid #b5b5b5' }}
