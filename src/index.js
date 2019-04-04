@@ -91,7 +91,6 @@ class CreditCardInput extends Component {
     },
     cardCVCInputRenderer: inputRenderer,
     cardExpiryInputRenderer: inputRenderer,
-    fakeCardNumberInputRenderer: inputRenderer,
     cardNumberInputRenderer: inputRenderer,
     cardZipInputRenderer: inputRenderer,
     cardExpiryInputProps: {},
@@ -128,8 +127,7 @@ class CreditCardInput extends Component {
       cardNumberLength: 0,
       cardNumber: null,
       errorText: null,
-      showZip: false,
-      collapseCardNumber: false
+      showZip: false
     };
   }
 
@@ -409,18 +407,9 @@ class CreditCardInput extends Component {
   };
 
   render = () => {
+    const { cardImage, errorText, showZip, isFormInvalid } = this.state;
     const {
-      cardImage,
-      errorText,
-      showZip,
-      isFormInvalid,
-      collapseCardNumber
-    } = this.state;
-    const {
-      animationOption: {
-        defaultTranslateX,
-        inititalTranslateX
-      },
+      animationOption: { defaultTranslateX, inititalTranslateX },
       cardImageClassName,
       cardImageStyle,
       cardCVCInputProps,
@@ -429,7 +418,6 @@ class CreditCardInput extends Component {
       cardNumberInputProps,
       cardCVCInputRenderer,
       cardExpiryInputRenderer,
-      fakeCardNumberInputRenderer,
       cardNumberInputRenderer,
       cardZipInputRenderer,
       containerClassName,
@@ -446,9 +434,7 @@ class CreditCardInput extends Component {
     } = this.props;
     const translateX = defaultTranslateX;
     const inputWrapperTranslateX = `translateX(${
-      (enableZipInput && !showZip)
-        ? inititalTranslateX
-        : translateX
+      enableZipInput && !showZip ? inititalTranslateX : translateX
     })`;
 
     return (
@@ -467,6 +453,7 @@ class CreditCardInput extends Component {
           )}
         >
           <img
+            alt="credit card flag"
             className={cardImageClassName}
             style={Object.assign({}, styles.cardImage, cardImageStyle)}
             src={cardImage}
@@ -476,32 +463,30 @@ class CreditCardInput extends Component {
             className="card-number-wrapper"
             data-max="9999 9999 9999 9999 9999"
           >
-            {cardNumberInputRenderer(
-              {
-                handleCardNumberChange: onChange =>
-                  this.handleCardNumberChange({ onChange }),
-                handleCardNumberBlur: onBlur =>
-                  this.handleCardNumberBlur({ onBlur }),
-                handleCardNumberFocus: onFocus =>
-                  this.handleCardNumberFocus({ onFocus }),
-                props: {
-                  id: 'card-number',
-                  ref: cardNumberField => {
-                    this.cardNumberField = cardNumberField;
-                  },
-                  autoComplete: 'cc-number',
-                  className: `credit-card-input ${inputClassName}`,
-                  placeholder:
-                    customTextLabels.cardNumberPlaceholder || 'Card number',
-                  type: 'tel',
-                  ...cardNumberInputProps,
-                  onBlur: this.handleCardNumberBlur(),
-                  onFocus: this.handleCardNumberFocus(),
-                  onChange: this.handleCardNumberChange(),
-                  onKeyPress: this.handleCardNumberKeyPress
-                }
+            {cardNumberInputRenderer({
+              handleCardNumberChange: onChange =>
+                this.handleCardNumberChange({ onChange }),
+              handleCardNumberBlur: onBlur =>
+                this.handleCardNumberBlur({ onBlur }),
+              handleCardNumberFocus: onFocus =>
+                this.handleCardNumberFocus({ onFocus }),
+              props: {
+                id: 'card-number',
+                ref: cardNumberField => {
+                  this.cardNumberField = cardNumberField;
+                },
+                autoComplete: 'cc-number',
+                className: `credit-card-input ${inputClassName}`,
+                placeholder:
+                  customTextLabels.cardNumberPlaceholder || 'Card number',
+                type: 'tel',
+                ...cardNumberInputProps,
+                onBlur: this.handleCardNumberBlur(),
+                onFocus: this.handleCardNumberFocus(),
+                onChange: this.handleCardNumberChange(),
+                onKeyPress: this.handleCardNumberKeyPress
               }
-            )}
+            })}
             <label style={styles.inputWrapperPsedoAfter}>
               9999 9999 9999 9999 9999
             </label>
@@ -511,7 +496,7 @@ class CreditCardInput extends Component {
           id="field-wrapper"
           className={fieldClassName}
           style={Object.assign(
-            {margin: '10px 0 0 0'},
+            { margin: '10px 0 0 0' },
             styles.fieldWrapper,
             fieldStyle,
             isFormInvalid && invalidStyle
