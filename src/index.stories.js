@@ -42,6 +42,10 @@ storiesOf('CreditCardInput', module)
     >
       <CreditCardInput
         fieldStyle={{ border: '1px solid #b5b5b5' }}
+        containerClassName="innerWrapper"
+        inputStyle={{
+          flexGrow: 1
+        }}
         customTextLabels={{
           cardNumberPlaceholder: 'Card Number'
         }}

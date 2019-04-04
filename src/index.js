@@ -506,6 +506,17 @@ class CreditCardInput extends Component {
               9999 9999 9999 9999 9999
             </label>
           </label>
+        </div>
+        <div
+          id="field-wrapper"
+          className={fieldClassName}
+          style={Object.assign(
+            {margin: '10px 0 0 0'},
+            styles.fieldWrapper,
+            fieldStyle,
+            isFormInvalid && invalidStyle
+          )}
+        >
           <label
             style={Object.assign({}, styles.inputWrapper, inputStyle, {
               transform: inputWrapperTranslateX

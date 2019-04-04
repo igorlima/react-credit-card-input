@@ -1,6 +1,6 @@
 {
   "name": "@igorlima/react-credit-card-input",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "A credit/debit card input field for React",
   "license": "MIT",
   "repository": {
