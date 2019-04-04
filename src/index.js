@@ -87,15 +87,7 @@ class CreditCardInput extends Component {
   static defaultProps = {
     animationOption: {
       defaultTranslateX: '0',
-      mobileTranslateX: '-2em',
-      inititalTranslateX: '4em',
-      hideCreditCardStyle: {
-        transform: 'translateX(-320px)',
-        zIndex: 0
-      },
-      showCreditCardStyle: {
-        transform: 'translateX(0px)'
-      }
+      inititalTranslateX: '4em'
     },
     cardCVCInputRenderer: inputRenderer,
     cardExpiryInputRenderer: inputRenderer,
@@ -113,7 +105,6 @@ class CreditCardInput extends Component {
     dangerTextClassName: '',
     dangerTextStyle: {},
     enableZipInput: false,
-    enableMobileFriendlyMode: false,
     fieldClassName: '',
     fieldStyle: {},
     inputComponent: 'input',
@@ -129,7 +120,6 @@ class CreditCardInput extends Component {
   constructor(props) {
     super(props);
     this.cardExpiryField = null;
-    this.fakeCardNumberField = null;
     this.cardNumberField = null;
     this.cvcField = null;
     this.zipField = null;
@@ -159,14 +149,12 @@ class CreditCardInput extends Component {
   };
 
   handleCardNumberBlur = ({ onBlur } = { onBlur: null }) => e => {
-    const { customTextLabels, enableMobileFriendlyMode } = this.props;
+    const { customTextLabels } = this.props;
     if (!payment.fns.validateCardNumber(e.target.value)) {
       this.setFieldInvalid(
         customTextLabels.invalidCardNumber || 'Card number is invalid',
         'cardNumber'
       );
-    } else {
-      enableMobileFriendlyMode && this.setState({ collapseCardNumber: true });
     }
 
     const { cardNumberInputProps } = this.props;
@@ -175,13 +163,6 @@ class CreditCardInput extends Component {
   };
 
   handleCardNumberFocus = ({ onFocus } = { onFocus: null }) => e => {
-    const { enableMobileFriendlyMode } = this.props;
-    if (enableMobileFriendlyMode) {
-      this.setState({ collapseCardNumber: false }, () => {
-        this.cardNumberField.focus();
-      });
-    }
-
     const { cardNumberInputProps } = this.props;
     cardNumberInputProps.onFocus && cardNumberInputProps.onFocus(e);
     onFocus && onFocus(e);
@@ -202,9 +183,6 @@ class CreditCardInput extends Component {
     const cardTypeLengths = cardTypeInfo.lengths || [16];
 
     this.cardNumberField.value = formatCardNumber(cardNumber);
-    if (this.fakeCardNumberField) {
-      this.fakeCardNumberField.value = this.cardNumberField.value.substr(-4);
-    }
 
     this.setState({
       cardImage: images[cardType] || images.placeholder,
@@ -441,10 +419,7 @@ class CreditCardInput extends Component {
     const {
       animationOption: {
         defaultTranslateX,
-        mobileTranslateX,
-        inititalTranslateX,
-        hideCreditCardStyle,
-        showCreditCardStyle
+        inititalTranslateX
       },
       cardImageClassName,
       cardImageStyle,
@@ -462,7 +437,6 @@ class CreditCardInput extends Component {
       dangerTextClassName,
       dangerTextStyle,
       enableZipInput,
-      enableMobileFriendlyMode,
       fieldClassName,
       fieldStyle,
       inputClassName,
@@ -470,12 +444,8 @@ class CreditCardInput extends Component {
       invalidStyle,
       customTextLabels
     } = this.props;
-    const translateX =
-      enableMobileFriendlyMode && collapseCardNumber
-        ? mobileTranslateX
-        : defaultTranslateX;
+    const translateX = defaultTranslateX;
     const inputWrapperTranslateX = `translateX(${
-      (enableMobileFriendlyMode && !collapseCardNumber) ||
       (enableZipInput && !showZip)
         ? inititalTranslateX
         : translateX
@@ -483,13 +453,7 @@ class CreditCardInput extends Component {
 
     return (
       <div
-        className={[
-          containerClassName,
-          enableMobileFriendlyMode ? 'mobile-friendly' : '',
-          collapseCardNumber ? 'collapsed' : ''
-        ]
-          .join(' ')
-          .trim()}
+        className={containerClassName}
         style={Object.assign({}, styles.container, containerStyle)}
       >
         <div
@@ -512,26 +476,6 @@ class CreditCardInput extends Component {
             className="card-number-wrapper"
             data-max="9999 9999 9999 9999 9999"
           >
-            {enableMobileFriendlyMode &&
-              fakeCardNumberInputRenderer(
-                {
-                  handleCardNumberFocus: onFocus =>
-                    this.handleCardNumberFocus({ onFocus }),
-                  props: {
-                    id: 'fake-card-number',
-                    ref: fakeCardNumberField => {
-                      this.fakeCardNumberField = fakeCardNumberField;
-                    },
-                    autoComplete: 'cc-number',
-                    className: `credit-card-input ${inputClassName}`,
-                    placeholder:
-                      customTextLabels.cardNumberPlaceholder || 'Card number',
-                    type: 'tel',
-                    onFocus: this.handleCardNumberFocus()
-                  }
-                },
-                !collapseCardNumber ? { display: 'none' } : {}
-              )}
             {cardNumberInputRenderer(
               {
                 handleCardNumberChange: onChange =>
@@ -556,13 +500,7 @@ class CreditCardInput extends Component {
                   onChange: this.handleCardNumberChange(),
                   onKeyPress: this.handleCardNumberKeyPress
                 }
-              },
-              Object.assign(
-                { transition: 'transform 1.0s' },
-                enableMobileFriendlyMode && collapseCardNumber
-                  ? hideCreditCardStyle
-                  : showCreditCardStyle
-              )
+              }
             )}
             <label style={styles.inputWrapperPsedoAfter}>
               9999 9999 9999 9999 9999
@@ -592,11 +530,7 @@ class CreditCardInput extends Component {
                 ...cardExpiryInputProps,
                 onBlur: this.handleCardExpiryBlur(),
                 onChange: this.handleCardExpiryChange(),
-                onKeyDown: this.handleKeyDown(
-                  enableMobileFriendlyMode
-                    ? this.fakeCardNumberField
-                    : this.cardNumberField
-                ),
+                onKeyDown: this.handleKeyDown(this.cardNumberField),
                 onKeyPress: this.handleCardExpiryKeyPress
               }
             })}
