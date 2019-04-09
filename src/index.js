@@ -87,7 +87,7 @@ class CreditCardInput extends Component {
   static defaultProps = {
     animationOption: {
       defaultTranslateX: '0',
-      inititalTranslateX: '4em'
+      initialTranslateX: '4em'
     },
     cardCVCInputRenderer: inputRenderer,
     cardExpiryInputRenderer: inputRenderer,
@@ -409,7 +409,7 @@ class CreditCardInput extends Component {
   render = () => {
     const { cardImage, errorText, showZip, isFormInvalid } = this.state;
     const {
-      animationOption: { defaultTranslateX, inititalTranslateX },
+      animationOption: { defaultTranslateX, initialTranslateX },
       cardImageClassName,
       cardImageStyle,
       cardCVCInputProps,
@@ -434,7 +434,7 @@ class CreditCardInput extends Component {
     } = this.props;
     const translateX = defaultTranslateX;
     const inputWrapperTranslateX = `translateX(${
-      enableZipInput && !showZip ? inititalTranslateX : translateX
+      enableZipInput && !showZip ? initialTranslateX : translateX
     })`;
 
     return (
