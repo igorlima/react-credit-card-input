@@ -282,7 +282,7 @@ class CreditCardInput extends Component {
     const { customTextLabels } = this.props;
     if (!payment.fns.validateCardCVC(e.target.value)) {
       this.setFieldInvalid(
-        customTextLabels.invalidCvc || 'CVC is invalid',
+        customTextLabels.invalidCvv || 'CVV is invalid',
         'cardCVC'
       );
     }
@@ -303,7 +303,7 @@ class CreditCardInput extends Component {
     if (CVCLength >= 4) {
       if (!payment.fns.validateCardCVC(CVC, cardType)) {
         this.setFieldInvalid(
-          customTextLabels.invalidCvc || 'CVC is invalid',
+          customTextLabels.invalidCvv || 'CVV is invalid',
           'cardCVC'
         );
       }
@@ -478,7 +478,7 @@ class CreditCardInput extends Component {
                 autoComplete: 'cc-number',
                 className: `credit-card-input ${inputClassName}`,
                 placeholder:
-                  customTextLabels.cardNumberPlaceholder || 'Card number',
+                  customTextLabels.cardNumberPlaceholder || 'Card Number',
                 type: 'tel',
                 ...cardNumberInputProps,
                 onBlur: this.handleCardNumberBlur(),
@@ -550,7 +550,7 @@ class CreditCardInput extends Component {
                 },
                 autoComplete: 'off',
                 className: `credit-card-input ${inputClassName}`,
-                placeholder: customTextLabels.cvcPlaceholder || 'CVC',
+                placeholder: customTextLabels.cvvPlaceholder || 'CVV',
                 type: 'tel',
                 ...cardCVCInputProps,
                 onBlur: this.handleCardCVCBlur(),
