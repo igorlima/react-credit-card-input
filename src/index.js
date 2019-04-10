@@ -5,6 +5,7 @@ import creditCardType from 'credit-card-type';
 import {
   formatCardNumber,
   formatExpiry,
+  formatCvc,
   hasCardNumberReachedMaxLength,
   hasCVCReachedMaxLength,
   hasZipReachedMaxLength,
@@ -249,12 +250,10 @@ class CreditCardInput extends Component {
     this.cardExpiryField.value = formatExpiry(cardExpiry);
 
     this.setFieldValid();
+    const value = this.cardExpiryField.value.split(' / ').join('/');
 
-    const expiryError = isExpiryInvalid(
-      cardExpiry,
-      customTextLabels.expiryError
-    );
-    if (cardExpiry.length > 4) {
+    const expiryError = isExpiryInvalid(value, customTextLabels.expiryError);
+    if (value.length > 4) {
       if (expiryError) {
         this.setFieldInvalid(expiryError, 'cardExpiry');
       } else {
@@ -282,7 +281,7 @@ class CreditCardInput extends Component {
     const { customTextLabels } = this.props;
     if (!payment.fns.validateCardCVC(e.target.value)) {
       this.setFieldInvalid(
-        customTextLabels.invalidCvv || 'CVV is invalid',
+        customTextLabels.invalidCvc || 'CVV is invalid',
         'cardCVC'
       );
     }
@@ -294,7 +293,9 @@ class CreditCardInput extends Component {
 
   handleCardCVCChange = ({ onChange } = { onChange: null }) => e => {
     const { customTextLabels } = this.props;
-    const CVC = e.target.value;
+    const value = formatCvc(e.target.value);
+    this.cvcField.value = value;
+    const CVC = value;
     const CVCLength = CVC.length;
     const isZipFieldAvailable = this.props.enableZipInput && this.state.showZip;
     const cardType = payment.fns.cardType(this.state.cardNumber);
@@ -303,7 +304,7 @@ class CreditCardInput extends Component {
     if (CVCLength >= 4) {
       if (!payment.fns.validateCardCVC(CVC, cardType)) {
         this.setFieldInvalid(
-          customTextLabels.invalidCvv || 'CVV is invalid',
+          customTextLabels.invalidCvc || 'CVV is invalid',
           'cardCVC'
         );
       }
@@ -475,6 +476,7 @@ class CreditCardInput extends Component {
                 ref: cardNumberField => {
                   this.cardNumberField = cardNumberField;
                 },
+                maxlength: '19',
                 autoComplete: 'cc-number',
                 className: `credit-card-input ${inputClassName}`,
                 placeholder:
@@ -548,9 +550,10 @@ class CreditCardInput extends Component {
                 ref: cvcField => {
                   this.cvcField = cvcField;
                 },
+                maxlength: '5',
                 autoComplete: 'off',
                 className: `credit-card-input ${inputClassName}`,
-                placeholder: customTextLabels.cvvPlaceholder || 'CVV',
+                placeholder: customTextLabels.cvcPlaceholder || 'CVV',
                 type: 'tel',
                 ...cardCVCInputProps,
                 onBlur: this.handleCardCVCBlur(),
@@ -580,6 +583,7 @@ class CreditCardInput extends Component {
                 ref: zipField => {
                   this.zipField = zipField;
                 },
+                maxlength: '6',
                 className: `credit-card-input zip-input ${inputClassName}`,
                 pattern: '[0-9]*',
                 placeholder: customTextLabels.zipPlaceholder || 'Zip',
