@@ -18,7 +18,7 @@ storiesOf('CreditCardInput', module)
       style={Object.assign({}, containerStyle, { backgroundColor: '#f0f0f0' })}
     >
       <CreditCardInput
-        cardCVCInputProps={{
+        cardCVVInputProps={{
           onBlur: e => console.log('cvc blur', e),
           onChange: e => console.log('cvc change', e),
           onError: err => console.log(`cvc error: ${err}`)
@@ -68,7 +68,7 @@ storiesOf('CreditCardInput', module)
       style={Object.assign({}, containerStyle, { backgroundColor: '#f0f0f0' })}
     >
       <CreditCardInput
-        cardCVCInputProps={{ value: '123' }}
+        cardCVVInputProps={{ value: '123' }}
         cardExpiryInputProps={{ value: '05 / 21' }}
         cardNumberInputProps={{ value: '4242 4242 4242 4242' }}
       />

@@ -96,7 +96,7 @@ class CreditCardInput extends Component {
     cardZipInputRenderer: inputRenderer,
     cardExpiryInputProps: {},
     cardNumberInputProps: {},
-    cardCVCInputProps: {},
+    cardCVVInputProps: {},
     cardZipInputProps: {},
     cardImageClassName: '',
     cardImageStyle: {},
@@ -286,8 +286,8 @@ class CreditCardInput extends Component {
       );
     }
 
-    const { cardCVCInputProps } = this.props;
-    cardCVCInputProps.onBlur && cardCVCInputProps.onBlur(e);
+    const { cardCVVInputProps } = this.props;
+    cardCVVInputProps.onBlur && cardCVVInputProps.onBlur(e);
     onBlur && onBlur(e);
   };
 
@@ -314,8 +314,8 @@ class CreditCardInput extends Component {
       this.zipField.focus();
     }
 
-    const { cardCVCInputProps } = this.props;
-    cardCVCInputProps.onChange && cardCVCInputProps.onChange(e);
+    const { cardCVVInputProps } = this.props;
+    cardCVVInputProps.onChange && cardCVVInputProps.onChange(e);
     onChange && onChange(e);
   };
 
@@ -413,7 +413,7 @@ class CreditCardInput extends Component {
       animationOption: { defaultTranslateX, initialTranslateX },
       cardImageClassName,
       cardImageStyle,
-      cardCVCInputProps,
+      cardCVVInputProps,
       cardZipInputProps,
       cardExpiryInputProps,
       cardNumberInputProps,
@@ -555,7 +555,7 @@ class CreditCardInput extends Component {
                 className: `credit-card-input ${inputClassName}`,
                 placeholder: customTextLabels.cvcPlaceholder || 'CVV',
                 type: 'tel',
-                ...cardCVCInputProps,
+                ...cardCVVInputProps,
                 onBlur: this.handleCardCVCBlur(),
                 onChange: this.handleCardCVCChange(),
                 onKeyDown: this.handleKeyDown(this.cardExpiryField),
