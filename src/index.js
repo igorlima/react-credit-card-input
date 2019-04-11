@@ -38,7 +38,8 @@ const styles = {
   },
   cardImage: {
     height: '1.3em',
-    zIndex: 2
+    zIndex: 2,
+    with: '2em'
   },
   inputWrapper: {
     alignItems: 'center',
@@ -77,7 +78,8 @@ const BACKSPACE_KEY_CODE = 8;
 const CARD_TYPES = {
   mastercard: 'MASTERCARD',
   visa: 'VISA',
-  amex: 'AMERICAN_EXPRESS'
+  amex: 'AMERICAN_EXPRESS',
+  dinersclub: 'DINERS_CLUB'
 };
 
 const inputRenderer = ({ props }, style = {}) => (
