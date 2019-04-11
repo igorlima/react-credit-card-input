@@ -37,9 +37,9 @@ const styles = {
     border: '1px solid #ff3860'
   },
   cardImage: {
-    height: '1.3em',
+    height: '1.5em',
     zIndex: 2,
-    with: '2em'
+    width: '2em'
   },
   inputWrapper: {
     alignItems: 'center',
