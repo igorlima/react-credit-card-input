@@ -143,6 +143,10 @@ class CreditCardInput extends Component {
     });
   };
 
+  isMonthDashKey = ({ key, target: { value } } = {}) => {
+    return !value.match(/[/-]/) && /^[/-]$/.test(key);
+  };
+
   checkIsNumeric = e => {
     if (!/^\d*$/.test(e.key)) {
       e.preventDefault();
@@ -247,9 +251,7 @@ class CreditCardInput extends Component {
 
   handleCardExpiryChange = ({ onChange } = { onChange: null }) => e => {
     const { customTextLabels } = this.props;
-    const cardExpiry = e.target.value.split(' / ').join('/');
-
-    this.cardExpiryField.value = formatExpiry(cardExpiry);
+    this.cardExpiryField.value = formatExpiry(e);
 
     this.setFieldValid();
     const value = this.cardExpiryField.value.split(' / ').join('/');
@@ -270,7 +272,11 @@ class CreditCardInput extends Component {
 
   handleCardExpiryKeyPress = e => {
     const value = e.target.value;
-    this.checkIsNumeric(e);
+
+    if (!this.isMonthDashKey(e)) {
+      this.checkIsNumeric(e);
+    }
+
     if (value && !isHighlighted()) {
       const valueLength = value.split(' / ').join('').length;
       if (valueLength >= 4) {
