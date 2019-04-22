@@ -6,6 +6,7 @@ import creditCardType from 'credit-card-type';
 import styled from 'styled-components';
 
 import {
+  DEFAULT_CARD_NUMBER_MAX_LENGTH,
   formatCardNumber,
   formatExpiry,
   formatCvc,
@@ -224,7 +225,7 @@ class CreditCardInput extends Component<Props, State> {
       creditCardType.getTypeInfo(
         creditCardType.types[this.CARD_TYPES[cardType]]
       ) || {};
-    const cardTypeLengths = cardTypeInfo.lengths || [16];
+    const cardTypeLengths = cardTypeInfo.lengths || [DEFAULT_CARD_NUMBER_MAX_LENGTH];
 
     this.cardNumberField.value = formatCardNumber(cardNumber);
 
@@ -248,7 +249,7 @@ class CreditCardInput extends Component<Props, State> {
           this.cardExpiryField.focus();
           break;
         }
-        if (cardNumberLength === lastCardTypeLength) {
+        if (cardNumberLength >= lastCardTypeLength) {
           this.setFieldInvalid(
             customTextLabels.invalidCardNumber || 'Card number is invalid',
             'cardNumber'
@@ -522,7 +523,6 @@ class CreditCardInput extends Component<Props, State> {
                 ref: cardNumberField => {
                   this.cardNumberField = cardNumberField;
                 },
-                maxlength: '19',
                 autoComplete: 'cc-number',
                 className: `credit-card-input ${inputClassName}`,
                 placeholder:
@@ -578,7 +578,7 @@ class CreditCardInput extends Component<Props, State> {
                 ref: cvcField => {
                   this.cvcField = cvcField;
                 },
-                maxlength: '5',
+                maxLength: '5',
                 autoComplete: 'off',
                 className: `credit-card-input ${inputClassName}`,
                 placeholder: customTextLabels.cvcPlaceholder || 'CVC',
@@ -606,7 +606,7 @@ class CreditCardInput extends Component<Props, State> {
                 ref: zipField => {
                   this.zipField = zipField;
                 },
-                maxlength: '6',
+                maxLength: '6',
                 className: `credit-card-input zip-input ${inputClassName}`,
                 pattern: '[0-9]*',
                 placeholder: customTextLabels.zipPlaceholder || 'Zip',
