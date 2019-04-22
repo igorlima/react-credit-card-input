@@ -287,7 +287,8 @@ class CreditCardInput extends Component {
 
   handleCardCVCBlur = ({ onBlur } = { onBlur: null }) => e => {
     const { customTextLabels } = this.props;
-    if (!payment.fns.validateCardCVC(e.target.value)) {
+    const cardType = payment.fns.cardType(this.state.cardNumber);
+    if (!payment.fns.validateCardCVC(e.target.value, cardType)) {
       this.setFieldInvalid(
         customTextLabels.invalidCvc || 'CVV is invalid',
         'cardCVV'
