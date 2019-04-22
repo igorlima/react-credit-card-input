@@ -3,6 +3,7 @@ import payment from 'payment';
 import creditCardType from 'credit-card-type';
 
 import {
+  DEFAULT_CARD_NUMBER_MAX_LENGTH,
   formatCardNumber,
   formatExpiry,
   formatCvc,
@@ -185,7 +186,9 @@ class CreditCardInput extends Component {
     const cardTypeInfo =
       creditCardType.getTypeInfo(creditCardType.types[CARD_TYPES[cardType]]) ||
       {};
-    const cardTypeLengths = cardTypeInfo.lengths || [16];
+    const cardTypeLengths = cardTypeInfo.lengths || [
+      DEFAULT_CARD_NUMBER_MAX_LENGTH
+    ];
 
     this.cardNumberField.value = formatCardNumber(cardNumber);
 
@@ -209,7 +212,7 @@ class CreditCardInput extends Component {
           this.cardExpiryField.focus();
           break;
         }
-        if (cardNumberLength === lastCardTypeLength) {
+        if (cardNumberLength >= lastCardTypeLength) {
           this.setFieldInvalid(
             customTextLabels.invalidCardNumber || 'Card number is invalid',
             'cardNumber'
@@ -485,7 +488,6 @@ class CreditCardInput extends Component {
                 ref: cardNumberField => {
                   this.cardNumberField = cardNumberField;
                 },
-                maxLength: '19',
                 autoComplete: 'cc-number',
                 className: `credit-card-input ${inputClassName}`,
                 placeholder:
