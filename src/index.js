@@ -89,6 +89,10 @@ const removeObjectKey = (obj, keyName) => {
     .reduce((memo, [key, value]) => Object.assign(memo, { [key]: value }), {});
 };
 
+const extractNumbers = str => {
+  return ((str || '').match(/\d+/g) || []).join('');
+};
+
 const inputRenderer = ({ props }, style = {}) => (
   <input style={Object.assign({}, styles.crediCardInput, style)} {...props} />
 );
@@ -119,7 +123,6 @@ class CreditCardInput extends Component {
     inputComponent: 'input',
     inputClassName: '',
     inputStyle: {},
-    invalidClassName: 'is-invalid',
     invalidStyle: {
       border: '1px solid #ff3860'
     },
@@ -168,6 +171,8 @@ class CreditCardInput extends Component {
         customTextLabels.invalidCardNumber || 'Card number is invalid',
         'cardNumber'
       );
+    } else {
+      this.setOtherFieldInvalidIfNeeded();
     }
 
     const { cardNumberInputProps } = this.props;
@@ -177,6 +182,7 @@ class CreditCardInput extends Component {
 
   handleCardNumberFocus = ({ onFocus } = { onFocus: null }) => e => {
     const { cardNumberInputProps } = this.props;
+    this.setFieldValid('cardNumber');
     cardNumberInputProps.onFocus && cardNumberInputProps.onFocus(e);
     onFocus && onFocus(e);
   };
@@ -187,7 +193,7 @@ class CreditCardInput extends Component {
       enableZipInput,
       cardNumberInputProps
     } = this.props;
-    const cardNumber = e.target.value;
+    const cardNumber = extractNumbers(e.target.value);
     const cardNumberLength = cardNumber.split(' ').join('').length;
     const cardType = payment.fns.cardType(cardNumber);
     const cardTypeInfo =
@@ -211,20 +217,16 @@ class CreditCardInput extends Component {
     this.setFieldValid('cardNumber');
     if (cardTypeLengths) {
       const lastCardTypeLength = cardTypeLengths[cardTypeLengths.length - 1];
-      for (let length of cardTypeLengths) {
-        if (
-          length === cardNumberLength &&
-          payment.fns.validateCardNumber(cardNumber)
-        ) {
-          this.cardExpiryField.focus();
-          break;
-        }
-        if (cardNumberLength >= lastCardTypeLength) {
-          this.setFieldInvalid(
-            customTextLabels.invalidCardNumber || 'Card number is invalid',
-            'cardNumber'
-          );
-        }
+      if (
+        cardTypeLengths.includes(cardNumberLength) &&
+        payment.fns.validateCardNumber(cardNumber)
+      ) {
+        this.cardExpiryField.focus();
+      } else if (cardNumberLength >= lastCardTypeLength) {
+        this.setFieldInvalid(
+          customTextLabels.invalidCardNumber || 'Card number is invalid',
+          'cardNumber'
+        );
       }
     }
 
@@ -252,11 +254,20 @@ class CreditCardInput extends Component {
     );
     if (expiryError) {
       this.setFieldInvalid(expiryError, 'cardExpiry');
+    } else {
+      this.setOtherFieldInvalidIfNeeded();
     }
 
     const { cardExpiryInputProps } = this.props;
     cardExpiryInputProps.onBlur && cardExpiryInputProps.onBlur(e);
     onBlur && onBlur(e);
+  };
+
+  handleCardExpiryFocus = ({ onFocus } = { onFocus: null }) => e => {
+    const { cardExpiryInputProps } = this.props;
+    this.setFieldValid('cardExpiry');
+    cardExpiryInputProps.onFocus && cardExpiryInputProps.onFocus(e);
+    onFocus && onFocus(e);
   };
 
   handleCardExpiryChange = ({ onChange } = { onChange: null }) => e => {
@@ -303,11 +314,20 @@ class CreditCardInput extends Component {
         customTextLabels.invalidCvc || 'CVV is invalid',
         'cardCVV'
       );
+    } else {
+      this.setOtherFieldInvalidIfNeeded();
     }
 
     const { cardCVVInputProps } = this.props;
     cardCVVInputProps.onBlur && cardCVVInputProps.onBlur(e);
     onBlur && onBlur(e);
+  };
+
+  handleCardCVCFocus = ({ onFocus } = { onFocus: null }) => e => {
+    const { cardCVVInputProps } = this.props;
+    this.setFieldValid('cardCVV');
+    cardCVVInputProps.onFocus && cardCVVInputProps.onFocus(e);
+    onFocus && onFocus(e);
   };
 
   handleCardCVCChange = ({ onChange } = { onChange: null }) => e => {
@@ -357,11 +377,20 @@ class CreditCardInput extends Component {
         customTextLabels.invalidZipCode || 'Zip code is invalid',
         'cardZip'
       );
+    } else {
+      this.setOtherFieldInvalidIfNeeded();
     }
 
     const { cardZipInputProps } = this.props;
     cardZipInputProps.onBlur && cardZipInputProps.onBlur(e);
     onBlur && onBlur(e);
+  };
+
+  handleCardZipFocus = ({ onFocus } = { onFocus: null }) => e => {
+    const { cardZipInputProps } = this.props;
+    this.setFieldValid('cardZip');
+    cardZipInputProps.onFocus && cardZipInputProps.onFocus(e);
+    onFocus && onFocus(e);
   };
 
   handleCardZipChange = ({ onChange } = { onChange: null }) => e => {
@@ -403,8 +432,15 @@ class CreditCardInput extends Component {
     };
   };
 
+  setOtherFieldInvalidIfNeeded = () => {
+    const errors = this.state.errors;
+    const [inputName, errorText = null] = Object.entries(errors)[0] || [];
+    errorText && this.setFieldInvalid(errorText, inputName);
+  };
+
   setFieldInvalid = (errorText, inputName) => {
-    const { invalidClassName, onError } = this.props;
+    const { onError } = this.props;
+
     this.setState({ errorText, isFormInvalid: true });
 
     if (inputName) {
@@ -425,19 +461,7 @@ class CreditCardInput extends Component {
 
   setFieldValid = inputName => {
     const errors = removeObjectKey(this.state.errors, inputName);
-    const [_inputName, errorText = null] = Object.entries(errors)[0] || [];
-    this.setState({ errors, errorText });
-
-    if (errorText) {
-      const { onError: onInputError } =
-        this.props[`${_inputName}InputProps`] || {};
-      const { onError } = this.props;
-      onInputError && onInputError(errorText);
-      onError && onError({ inputName: _inputName, error: errorText });
-    } else {
-      const { invalidClassName } = this.props;
-      this.setState({ isFormInvalid: false });
-    }
+    this.setState({ errors, errorText: null, isFormInvalid: false });
   };
 
   render = () => {
@@ -546,6 +570,8 @@ class CreditCardInput extends Component {
                 this.handleCardExpiryChange({ onChange }),
               handleCardExpiryBlur: onBlur =>
                 this.handleCardExpiryBlur({ onBlur }),
+              handleCardExpiryFocus: onFocus =>
+                this.handleCardExpiryFocus({ onFocus }),
               props: {
                 id: 'card-expiry',
                 ref: cardExpiryField => {
@@ -557,6 +583,7 @@ class CreditCardInput extends Component {
                 type: 'tel',
                 ...cardExpiryInputProps,
                 onBlur: this.handleCardExpiryBlur(),
+                onFocus: this.handleCardExpiryFocus(),
                 onChange: this.handleCardExpiryChange(),
                 onKeyDown: this.handleKeyDown(this.cardNumberField),
                 onKeyPress: this.handleCardExpiryKeyPress
@@ -575,6 +602,8 @@ class CreditCardInput extends Component {
               handleCardCVCChange: onChange =>
                 this.handleCardCVCChange({ onChange }),
               handleCardCVCBlur: onBlur => this.handleCardCVCBlur({ onBlur }),
+              handleCardCVCFocus: onFocus =>
+                this.handleCardCVCFocus({ onFocus }),
               props: {
                 id: 'cvc',
                 ref: cvcField => {
@@ -587,6 +616,7 @@ class CreditCardInput extends Component {
                 type: 'tel',
                 ...cardCVVInputProps,
                 onBlur: this.handleCardCVCBlur(),
+                onFocus: this.handleCardCVCFocus(),
                 onChange: this.handleCardCVCChange(),
                 onKeyDown: this.handleKeyDown(this.cardExpiryField),
                 onKeyPress: this.handleCardCVCKeyPress
@@ -608,6 +638,8 @@ class CreditCardInput extends Component {
               handleCardZipChange: onChange =>
                 this.handleCardZipChange({ onChange }),
               handleCardZipBlur: onBlur => this.handleCardZipBlur({ onBlur }),
+              handleCardZipFocus: onFocus =>
+                this.handleCardZipFocus({ onFocus }),
               props: {
                 id: 'zip',
                 ref: zipField => {
@@ -620,6 +652,7 @@ class CreditCardInput extends Component {
                 type: 'text',
                 ...cardZipInputProps,
                 onBlur: this.handleCardZipBlur(),
+                onFocus: this.handleCardZipFocus(),
                 onChange: this.handleCardZipChange(),
                 onKeyDown: this.handleKeyDown(this.cvcField),
                 onKeyPress: this.handleCardZipKeyPress
