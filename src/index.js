@@ -4,7 +4,6 @@ import creditCardType from 'credit-card-type';
 
 import {
   DEFAULT_CARD_NUMBER_MAX_LENGTH,
-  formatCardNumber,
   formatExpiry,
   formatCvc,
   hasCardNumberReachedMaxLength,
@@ -82,6 +81,31 @@ const CARD_TYPES = {
   amex: 'AMERICAN_EXPRESS',
   dinersclub: 'DINERS_CLUB'
 };
+
+class Cursor {
+  constructor(event) {
+    this.cursorStart = event.target.selectionStart;
+    this.cursorEnd = event.target.selectionEnd;
+    this.event = event;
+  }
+
+  isSpace(value) {
+    return value.charAt(this.cursorStart - 1) === ' ';
+  }
+
+  setSelectionRange(value) {
+    const currentCursor = this.event.target.selectionStart;
+    if (currentCursor - this.cursorStart > 2) {
+      const isSpace = this.isSpace(value);
+      const eventData = this.event.nativeEvent && this.event.nativeEvent.data;
+      const cursorStart =
+        isSpace && eventData ? this.cursorStart + 1 : this.cursorStart;
+      const cursorEnd =
+        isSpace && eventData ? this.cursorEnd + 1 : this.cursorEnd;
+      this.event.target.setSelectionRange(cursorStart, cursorEnd);
+    }
+  }
+}
 
 const removeObjectKey = (obj, keyName) => {
   return Object.entries(obj)
@@ -193,6 +217,7 @@ class CreditCardInput extends Component {
       enableZipInput,
       cardNumberInputProps
     } = this.props;
+    const cursor = new Cursor(e);
     const cardNumber = extractNumbers(e.target.value);
     const cardNumberLength = cardNumber.split(' ').join('').length;
     const cardType = payment.fns.cardType(cardNumber);
@@ -203,7 +228,8 @@ class CreditCardInput extends Component {
       DEFAULT_CARD_NUMBER_MAX_LENGTH
     ];
 
-    this.cardNumberField.value = formatCardNumber(cardNumber);
+    this.cardNumberField.value = payment.fns.formatCardNumber(cardNumber);
+    cursor.setSelectionRange(this.cardNumberField.value);
 
     this.setState({
       cardImage: images[cardType] || images.placeholder,
