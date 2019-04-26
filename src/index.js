@@ -491,7 +491,7 @@ class CreditCardInput extends Component {
   };
 
   render = () => {
-    const { cardImage, errorText, showZip, isFormInvalid, errors } = this.state;
+    const { cardImage, errorText, showZip, errors } = this.state;
     const {
       animationOption: { defaultTranslateX, initialTranslateX },
       cardImageClassName,
@@ -532,7 +532,7 @@ class CreditCardInput extends Component {
             {},
             styles.fieldWrapper,
             fieldStyle,
-            isFormInvalid && !!errors.cardNumber && invalidStyle
+            !!errors.cardNumber && invalidStyle
           )}
         >
           <img
@@ -581,9 +581,7 @@ class CreditCardInput extends Component {
             { margin: '10px 0 0 0' },
             styles.fieldWrapper,
             fieldStyle,
-            isFormInvalid &&
-              (!!errors.cardExpiry || !!errors.cardCVV) &&
-              invalidStyle
+            (!!errors.cardExpiry || !!errors.cardCVV) && invalidStyle
           )}
         >
           <label
@@ -689,12 +687,12 @@ class CreditCardInput extends Component {
             <label style={styles.inputWrapperPsedoAfter}>999999</label>
           </label>
         </div>
-        {errorText && (
+        {(!!errors.cardNumber || !!errors.cardExpiry || !!errors.cardCVV) && (
           <p
             className={dangerTextClassName}
             style={Object.assign({}, styles.dangerText, dangerTextStyle)}
           >
-            {errorText}
+            {errors.cardNumber || errors.cardExpiry || errors.cardCVV}
           </p>
         )}
       </div>
