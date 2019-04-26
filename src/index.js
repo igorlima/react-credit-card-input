@@ -465,7 +465,7 @@ class CreditCardInput extends Component {
   };
 
   render = () => {
-    const { cardImage, errorText, showZip, isFormInvalid } = this.state;
+    const { cardImage, errorText, showZip, isFormInvalid, errors } = this.state;
     const {
       animationOption: { defaultTranslateX, initialTranslateX },
       cardImageClassName,
@@ -506,7 +506,7 @@ class CreditCardInput extends Component {
             {},
             styles.fieldWrapper,
             fieldStyle,
-            isFormInvalid && invalidStyle
+            isFormInvalid && !!errors.cardNumber && invalidStyle
           )}
         >
           <img
@@ -555,7 +555,9 @@ class CreditCardInput extends Component {
             { margin: '10px 0 0 0' },
             styles.fieldWrapper,
             fieldStyle,
-            isFormInvalid && invalidStyle
+            isFormInvalid &&
+              (!!errors.cardExpiry || !!errors.cardCVV) &&
+              invalidStyle
           )}
         >
           <label
