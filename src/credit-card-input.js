@@ -1,8 +1,11 @@
 // @flow
 
-import React from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
-import CreditCardUtilities from './credit-card-utilities';
+import CardNumberInput from './card-number-input';
+import CardExpiryInput from './card-expiry-input';
+import CardCvcInput from './card-cvc-input';
+import CardZipInput from './card-zip-input';
 
 const Container = styled.div`
   display: inline-block;
@@ -68,20 +71,110 @@ const DangerText = styled.p`
   ${({ styled }) => ({ ...styled })};
 `;
 
-class CreditCardInput extends CreditCardUtilities<Props, State> {
+type Props = {
+  CARD_TYPES: Object,
+  onError?: Function,
+  cardExpiryInputProps: Object,
+  cardNumberInputProps: Object,
+  cardCVCInputProps: Object,
+  cardZipInputProps: Object,
+  cardImageClassName: string,
+  cardImageStyle: Object,
+  containerClassName: string,
+  containerStyle: Object,
+  dangerTextClassName: string,
+  dangerTextStyle: Object,
+  fieldClassName: string,
+  fieldStyle: Object,
+  enableZipInput: boolean,
+  images: Object,
+  inputClassName: string,
+  inputStyle: Object,
+  invalidClassName: string,
+  invalidStyle: Object,
+  customTextLabels: Object
+};
+
+type State = {
+  cardImage: string,
+  cardNumber: ?string,
+  errorText: ?string,
+  showZip: boolean
+};
+
+class CreditCardInput extends Component<Props, State> {
+  cardExpiryField: any;
+  cardNumberField: any;
+  cvcField: any;
+  zipField: any;
+
+  static defaultProps = {
+    cardExpiryInputProps: {},
+    cardNumberInputProps: {},
+    cardCVCInputProps: {},
+    cardZipInputProps: {},
+    cardImageClassName: '',
+    cardImageStyle: {},
+    containerClassName: '',
+    containerStyle: {},
+    dangerTextClassName: '',
+    dangerTextStyle: {},
+    enableZipInput: false,
+    fieldClassName: '',
+    fieldStyle: {},
+    inputClassName: '',
+    inputStyle: {},
+    invalidClassName: 'is-invalid',
+    invalidStyle: {},
+    customTextLabels: {}
+  };
+
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      cardImage: null,
+      cardNumber: null,
+      errorText: null,
+      showZip: false
+    };
+  }
+
+  setFieldInvalid = (onInputError?: ?Function) => (errorText: string) => {
+    const { invalidClassName, onError } = this.props;
+    // $FlowFixMe
+    document.getElementById('field-wrapper').classList.add(invalidClassName);
+    this.setState({ errorText });
+
+    if (onInputError) {
+      onInputError(errorText);
+    }
+
+    if (onError) {
+      onError({ error: errorText });
+    }
+  };
+
+  setFieldValid = () => {
+    const { invalidClassName } = this.props;
+    // $FlowFixMe
+    document.getElementById('field-wrapper').classList.remove(invalidClassName);
+    this.setState({ errorText: null });
+  };
+
+  watchCardNumberInputState = ({ cardImage, cardNumber, showZip }) => {
+    this.setState({ cardImage, cardNumber, showZip });
+  };
+
   render = () => {
-    const { cardImage, errorText, showZip } = this.state;
+    const { cardImage, cardNumber, errorText, showZip } = this.state;
     const {
+      CARD_TYPES,
       cardImageClassName,
       cardImageStyle,
       cardCVCInputProps,
       cardZipInputProps,
       cardExpiryInputProps,
       cardNumberInputProps,
-      cardCVCInputRenderer,
-      cardExpiryInputRenderer,
-      cardNumberInputRenderer,
-      cardZipInputRenderer,
       containerClassName,
       containerStyle,
       dangerTextClassName,
@@ -89,6 +182,7 @@ class CreditCardInput extends CreditCardUtilities<Props, State> {
       enableZipInput,
       fieldClassName,
       fieldStyle,
+      images,
       inputClassName,
       inputStyle,
       invalidStyle,
@@ -114,28 +208,23 @@ class CreditCardInput extends CreditCardUtilities<Props, State> {
             translateX={false}
             data-max="9999 9999 9999 9999 9999"
           >
-            {cardNumberInputRenderer({
-              handleCardNumberChange: onChange =>
-                this.handleCardNumberChange({ onChange }),
-              handleCardNumberBlur: onBlur =>
-                this.handleCardNumberBlur({ onBlur }),
-              props: {
-                id: 'card-number',
-                ref: cardNumberField => {
-                  this.cardNumberField = cardNumberField;
-                },
-                maxlength: '19',
-                autoComplete: 'cc-number',
-                className: `credit-card-input ${inputClassName}`,
-                placeholder:
-                  customTextLabels.cardNumberPlaceholder || 'Card number',
-                type: 'tel',
-                ...cardNumberInputProps,
-                onBlur: this.handleCardNumberBlur(),
-                onChange: this.handleCardNumberChange(),
-                onKeyPress: this.handleCardNumberKeyPress
-              }
-            })}
+            <CardNumberInput
+              CARD_TYPES={CARD_TYPES}
+              autoAdvance={() => this.cardExpiryField.focus()}
+              cardNumberInputProps={cardNumberInputProps}
+              customTextLabels={customTextLabels}
+              enableZipInput={enableZipInput}
+              images={images}
+              inputClassName={inputClassName}
+              setFieldInvalid={this.setFieldInvalid(
+                cardNumberInputProps.onError
+              )}
+              setFieldValid={this.setFieldValid}
+              watchState={this.watchCardNumberInputState}
+              ref={cardNumberField => {
+                this.cardNumberField = cardNumberField;
+              }}
+            />
           </InputWrapper>
           <InputWrapper
             inputStyled={inputStyle}
@@ -143,27 +232,20 @@ class CreditCardInput extends CreditCardUtilities<Props, State> {
             data-max="MM / YY 9"
             translateX={enableZipInput && !showZip}
           >
-            {cardExpiryInputRenderer({
-              handleCardExpiryChange: onChange =>
-                this.handleCardExpiryChange({ onChange }),
-              handleCardExpiryBlur: onBlur =>
-                this.handleCardExpiryBlur({ onBlur }),
-              props: {
-                id: 'card-expiry',
-                ref: cardExpiryField => {
-                  this.cardExpiryField = cardExpiryField;
-                },
-                autoComplete: 'cc-exp',
-                className: `credit-card-input ${inputClassName}`,
-                placeholder: customTextLabels.expiryPlaceholder || 'MM/YY',
-                type: 'tel',
-                ...cardExpiryInputProps,
-                onBlur: this.handleCardExpiryBlur(),
-                onChange: this.handleCardExpiryChange(),
-                onKeyDown: this.handleKeyDown(this.cardNumberField),
-                onKeyPress: this.handleCardExpiryKeyPress
-              }
-            })}
+            <CardExpiryInput
+              autoAdvance={() => this.cvcField.focus()}
+              cardExpiryInputProps={cardExpiryInputProps}
+              customTextLabels={customTextLabels}
+              inputClassName={inputClassName}
+              setFieldInvalid={this.setFieldInvalid(
+                cardExpiryInputProps.onError
+              )}
+              setFieldValid={this.setFieldValid}
+              setback={() => this.cardNumberField.focus()}
+              ref={cardExpiryField => {
+                this.cardExpiryField = cardExpiryField;
+              }}
+            />
           </InputWrapper>
           <InputWrapper
             inputStyled={inputStyle}
@@ -171,27 +253,21 @@ class CreditCardInput extends CreditCardUtilities<Props, State> {
             data-max="99999"
             translateX={enableZipInput && !showZip}
           >
-            {cardCVCInputRenderer({
-              handleCardCVCChange: onChange =>
-                this.handleCardCVCChange({ onChange }),
-              handleCardCVCBlur: onBlur => this.handleCardCVCBlur({ onBlur }),
-              props: {
-                id: 'cvc',
-                ref: cvcField => {
-                  this.cvcField = cvcField;
-                },
-                maxlength: '5',
-                autoComplete: 'off',
-                className: `credit-card-input ${inputClassName}`,
-                placeholder: customTextLabels.cvcPlaceholder || 'CVC',
-                type: 'tel',
-                ...cardCVCInputProps,
-                onBlur: this.handleCardCVCBlur(),
-                onChange: this.handleCardCVCChange(),
-                onKeyDown: this.handleKeyDown(this.cardExpiryField),
-                onKeyPress: this.handleCardCVCKeyPress
-              }
-            })}
+            <CardCvcInput
+              autoAdvance={() => this.zipField.focus()}
+              cardCVCInputProps={cardCVCInputProps}
+              cardNumber={cardNumber}
+              customTextLabels={customTextLabels}
+              enableZipInput={enableZipInput}
+              inputClassName={inputClassName}
+              setFieldInvalid={this.setFieldInvalid(cardCVCInputProps.onError)}
+              setFieldValid={this.setFieldValid}
+              setback={() => this.cardExpiryField.focus()}
+              showZip={showZip}
+              ref={cvcField => {
+                this.cvcField = cvcField;
+              }}
+            />
           </InputWrapper>
           <InputWrapper
             data-max="999999"
@@ -199,27 +275,18 @@ class CreditCardInput extends CreditCardUtilities<Props, State> {
             isZipActive={showZip}
             translateX={enableZipInput && !showZip}
           >
-            {cardZipInputRenderer({
-              handleCardZipChange: onChange =>
-                this.handleCardZipChange({ onChange }),
-              handleCardZipBlur: onBlur => this.handleCardZipBlur({ onBlur }),
-              props: {
-                id: 'zip',
-                ref: zipField => {
-                  this.zipField = zipField;
-                },
-                maxlength: '6',
-                className: `credit-card-input zip-input ${inputClassName}`,
-                pattern: '[0-9]*',
-                placeholder: customTextLabels.zipPlaceholder || 'Zip',
-                type: 'text',
-                ...cardZipInputProps,
-                onBlur: this.handleCardZipBlur(),
-                onChange: this.handleCardZipChange(),
-                onKeyDown: this.handleKeyDown(this.cvcField),
-                onKeyPress: this.handleCardZipKeyPress
-              }
-            })}
+            <CardZipInput
+              cardNumber={cardNumber}
+              cardZipInputProps={cardZipInputProps}
+              customTextLabels={customTextLabels}
+              inputClassName={inputClassName}
+              setFieldInvalid={this.setFieldInvalid(cardZipInputProps.onError)}
+              setFieldValid={this.setFieldValid}
+              setback={() => this.cvcField.focus()}
+              ref={zipField => {
+                this.zipField = zipField;
+              }}
+            />
           </InputWrapper>
         </FieldWrapper>
         {errorText && (
