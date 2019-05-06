@@ -1,0 +1,9 @@
+export const CHANGE_CARD_IMAGE = Symbol('CHANGE_CARD_IMAGE');
+export const CHANGE_CARD_NUMBER = Symbol('CHANGE_CARD_NUMBER');
+export const CHANGE_CARD_TYPES = Symbol('CHANGE_CARD_TYPES');
+export const CHANGE_CUSTOM_TEXT_LABELS = Symbol('CHANGE_CUSTOM_TEXT_LABELS');
+export const CHANGE_ERROR_TEXT = Symbol('CHANGE_ERROR_TEXT');
+export const CHANGE_IMAGES = Symbol('CHANGE_IMAGES');
+export const CHANGE_INPUT_CLASS_NAME = Symbol('CHANGE_INPUT_CLASS_NAME');
+export const ENABLE_ZIP_INPUT = Symbol('ENABLE_ZIP_INPUT');
+export const SHOW_ZIP = Symbol('SHOW_ZIP');

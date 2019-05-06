@@ -33,12 +33,4 @@ export default [{
     format: 'umd',
     globals
   }
-}, {
-  input: `${__dirname}/src/credit-card-utilities.js`,
-  output: {
-    name: 'CreditCardUtilities',
-    file: `${__dirname}/lib/credit-card-utilities.js`,
-    format: 'umd',
-    globals
-  }
 }].map(output => Object.assign(output, {external, plugins, sourcemap: true}));

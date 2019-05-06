@@ -20,10 +20,10 @@ const checkIsNumeric = (e: any) => {
   }
 };
 
-const handleKeyDown = (setback: Function) => {
+const handleKeyDown = (callback: Function) => {
   return (e: SyntheticInputEvent<*>) => {
     if (e.keyCode === BACKSPACE_KEY_CODE && !e.target.value) {
-      setback && setback();
+      callback && callback();
     }
   };
 };
