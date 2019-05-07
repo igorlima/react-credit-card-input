@@ -1,15 +1,12 @@
 // @flow
 
 import { useEffect, useRef } from 'react';
-import {
-  checkIsNumeric,
-  handleKeyDown,
-  inputRenderer,
-  isMonthDashKey
-} from '../utils';
 import { CHANGE_ERROR_TEXT } from '../reducer/actions';
 import { formatExpiry, isHighlighted } from '../utils/formatter';
 import isExpiryInvalid from '../utils/is-expiry-invalid';
+import checkIsNumeric from '../utils/check-is-numeric';
+import handleKeyDown from '../utils/handle-key-down';
+import isMonthDashKey from '../utils/is-month-dash-key';
 
 type CardExpiryInputProps = {
   cardExpiryInputProps: Object,
@@ -21,7 +18,7 @@ const defaultProps: CardExpiryInputProps = {
   cardExpiryInputProps: {}
 };
 
-const CardExpiryInput = (props: CardExpiryInputProps) => {
+const useCardExpiryInput = (props: CardExpiryInputProps = defaultProps) => {
   const cardExpiryField = useRef(null);
   const { cardExpiryInputProps, dispatch, state } = props;
   const { customTextLabels, events, inputClassName } = state;
@@ -103,27 +100,21 @@ const CardExpiryInput = (props: CardExpiryInputProps) => {
     }
   };
 
-  return inputRenderer({
-    handleCardExpiryChange: onChange => handleCardExpiryChange({ onChange }),
-    handleCardExpiryBlur: onBlur => handleCardExpiryBlur({ onBlur }),
-    props: {
-      id: 'card-expiry',
-      ref: cardExpiryField,
-      autoComplete: 'cc-exp',
-      className: `credit-card-input ${inputClassName}`,
-      placeholder: customTextLabels.expiryPlaceholder || 'MM/YY',
-      type: 'tel',
-      ...cardExpiryInputProps,
-      onBlur: handleCardExpiryBlur(),
-      onChange: handleCardExpiryChange(),
-      onKeyDown: handleKeyDown(() => {
-        events.publish(events.types.FOCUS_ON_CARD_NUMBER);
-      }),
-      onKeyPress: handleCardExpiryKeyPress
-    }
-  });
+  return {
+    id: 'card-expiry',
+    ref: cardExpiryField,
+    autoComplete: 'cc-exp',
+    className: `credit-card-input ${inputClassName}`,
+    placeholder: customTextLabels.expiryPlaceholder || 'MM/YY',
+    type: 'tel',
+    ...cardExpiryInputProps,
+    onBlur: handleCardExpiryBlur(),
+    onChange: handleCardExpiryChange(),
+    onKeyDown: handleKeyDown(() => {
+      events.publish(events.types.FOCUS_ON_CARD_NUMBER);
+    }),
+    onKeyPress: handleCardExpiryKeyPress
+  };
 };
 
-CardExpiryInput.defaultProps = defaultProps;
-
-export default CardExpiryInput;
+export default useCardExpiryInput;

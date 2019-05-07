@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import payment from 'payment';
 import creditCardType from 'credit-card-type';
-import { checkIsNumeric, inputRenderer } from '../utils';
+import checkIsNumeric from '../utils/check-is-numeric';
 import {
   formatCardNumber,
   hasCardNumberReachedMaxLength,
@@ -26,7 +26,7 @@ const defaultProps: CardNumberInputProps = {
   cardNumberInputProps: {}
 };
 
-const CardNumberInput = (props: CardNumberInputProps) => {
+const useCardNumberInput = (props: CardNumberInputProps = defaultProps) => {
   const cardNumberField = useRef(null);
   const { cardNumberInputProps, dispatch, state } = props;
   const {
@@ -139,25 +139,19 @@ const CardNumberInput = (props: CardNumberInputProps) => {
     }
   };
 
-  return inputRenderer({
-    handleCardNumberChange: onChange => handleCardNumberChange({ onChange }),
-    handleCardNumberBlur: onBlur => handleCardNumberBlur({ onBlur }),
-    props: {
-      id: 'card-number',
-      ref: cardNumberField,
-      maxLength: '19',
-      autoComplete: 'cc-number',
-      className: `credit-card-input ${inputClassName}`,
-      placeholder: customTextLabels.cardNumberPlaceholder || 'Card number',
-      type: 'tel',
-      ...cardNumberInputProps,
-      onBlur: handleCardNumberBlur(),
-      onChange: handleCardNumberChange(),
-      onKeyPress: handleCardNumberKeyPress
-    }
-  });
+  return {
+    id: 'card-number',
+    ref: cardNumberField,
+    maxLength: '19',
+    autoComplete: 'cc-number',
+    className: `credit-card-input ${inputClassName}`,
+    placeholder: customTextLabels.cardNumberPlaceholder || 'Card number',
+    type: 'tel',
+    ...cardNumberInputProps,
+    onBlur: handleCardNumberBlur(),
+    onChange: handleCardNumberChange(),
+    onKeyPress: handleCardNumberKeyPress
+  };
 };
 
-CardNumberInput.defaultProps = defaultProps;
-
-export default CardNumberInput;
+export default useCardNumberInput;

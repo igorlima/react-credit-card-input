@@ -2,12 +2,13 @@
 
 import { useEffect, useRef } from 'react';
 import payment from 'payment';
-import { checkIsNumeric, handleKeyDown, inputRenderer } from '../utils';
 import {
   formatCvc,
   hasCVCReachedMaxLength,
   isHighlighted
 } from '../utils/formatter';
+import checkIsNumeric from '../utils/check-is-numeric';
+import handleKeyDown from '../utils/handle-key-down';
 import { CHANGE_ERROR_TEXT } from '../reducer/actions';
 
 type CardCVCInputProps = {
@@ -20,7 +21,7 @@ const defaultProps: CardCVCInputProps = {
   cardCVCInputProps: {}
 };
 
-const CardCVCInput = (props: CardCVCInputProps) => {
+const useCardCVCInput = (props: CardCVCInputProps = defaultProps) => {
   const cvcField = useRef(null);
   const { cardCVCInputProps, dispatch, state } = props;
   const {
@@ -104,27 +105,22 @@ const CardCVCInput = (props: CardCVCInputProps) => {
     }
   };
 
-  return inputRenderer({
-    handleCardCVCChange: onChange => handleCardCVCChange({ onChange }),
-    handleCardCVCBlur: onBlur => handleCardCVCBlur({ onBlur }),
-    props: {
-      id: 'cvc',
-      ref: cvcField,
-      maxLength: '5',
-      autoComplete: 'off',
-      className: `credit-card-input ${inputClassName}`,
-      placeholder: customTextLabels.cvcPlaceholder || 'CVC',
-      type: 'tel',
-      ...cardCVCInputProps,
-      onBlur: handleCardCVCBlur(),
-      onChange: handleCardCVCChange(),
-      onKeyDown: handleKeyDown(() => {
-        events.publish(events.types.FOCUS_ON_CARD_EXPIRY);
-      }),
-      onKeyPress: handleCardCVCKeyPress
-    }
-  });
+  return {
+    id: 'cvc',
+    ref: cvcField,
+    maxLength: '5',
+    autoComplete: 'off',
+    className: `credit-card-input ${inputClassName}`,
+    placeholder: customTextLabels.cvcPlaceholder || 'CVC',
+    type: 'tel',
+    ...cardCVCInputProps,
+    onBlur: handleCardCVCBlur(),
+    onChange: handleCardCVCChange(),
+    onKeyDown: handleKeyDown(() => {
+      events.publish(events.types.FOCUS_ON_CARD_EXPIRY);
+    }),
+    onKeyPress: handleCardCVCKeyPress
+  };
 };
-CardCVCInput.defaultProps = defaultProps;
 
-export default CardCVCInput;
+export default useCardCVCInput;

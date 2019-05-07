@@ -1,4 +1,6 @@
 import babel from 'rollup-plugin-babel';
+// https://github.com/rollup/rollup/issues/346
+import resolve from 'rollup-plugin-node-resolve';
 
 const globals = {
   react: 'React',
@@ -15,6 +17,7 @@ const external = [
 ];
 
 const plugins = [
+  resolve({}),
   babel({
     presets: [['env', { modules: false }], 'react', 'flow'],
     plugins: [
@@ -30,6 +33,14 @@ export default [{
   output: {
     name: 'CreditCardInput',
     file: `${__dirname}/lib/index.js`,
+    format: 'umd',
+    globals
+  }
+}, {
+  input: `${__dirname}/src/hooks/use-credit-card-input.js`,
+  output: {
+    name: 'useCreditCardInput',
+    file: `${__dirname}/lib/useCreditCardInput.js`,
     format: 'umd',
     globals
   }
